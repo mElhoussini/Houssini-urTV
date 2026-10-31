@@ -6,7 +6,7 @@
 // Network is cut; the photos and fonts the app serves from the device are served from the repo instead,
 // the way PhotoCache.java answers them on the TV.
 import { chromium } from 'playwright';
-import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync, existsSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -32,8 +32,13 @@ async function open(file, hash, { width = 1920, height = 1080, seed = true, net 
   await ctx.route(/^https?:/, r => {
     if (net && net(r)) return;
     const u = r.request().url(), i = u.indexOf('/master/'), rel = i > 0 ? u.slice(i + 8) : '';
-    if (/^(assets\/(backgrounds|fonts)|photos)\//.test(rel))
-      return r.fulfill({ path: path.join(ROOT, rel), headers: { 'Access-Control-Allow-Origin': '*' } });
+    if (/^(assets\/(backgrounds|fonts)|photos)\//.test(rel)) {
+      const asset = path.join(ROOT, rel);
+      // Private font files are intentionally absent from this public clone. Match
+      // the TV's fallback behavior by letting the browser use its system font.
+      if (existsSync(asset)) return r.fulfill({ path: asset, headers: { 'Access-Control-Allow-Origin': '*' } });
+      return r.abort();
+    }
     return r.abort();
   });
   if (seed) await ctx.addInitScript(i => { try { localStorage.setItem('photoIndex', i); } catch (e) {} }, INDEX);
