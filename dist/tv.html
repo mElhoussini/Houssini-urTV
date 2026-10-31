@@ -1614,7 +1614,7 @@ function matchSlot(id, now, shown){
 // branch data-leagues); the page downloads one file per followed league every 30 minutes and no more: that is the
 // whole cost of a league, however many clubs it has. A game in progress is refreshed by lookupevent.php like a followed
 // team's (loadLive), at most LEAGUE_LIVE_MAX of them at a time.
-const LEAGUE_BASE = 'https://raw.githubusercontent.com/tshi-dev/UrTV/data-leagues/leagues/';
+const LEAGUE_BASE = 'https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/data-leagues/leagues/';
 const LEAGUE_LIVE_MAX = 6;
 const leagueSlug = n => String(n).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');   // team_ids.slug()
 let LEAGUE_DATA = (()=>{ try{ return JSON.parse(localStorage.getItem('leagueData') || '{}') || {}; }catch(e){ return {}; } })();   // name -> its file
@@ -2193,7 +2193,7 @@ async function fetchT(url, ms){
 
 // ---- prices. First the file CI keeps (.github/tools/market_prices.py, branch data-markets): one download holds every market and the
 // common stocks, so the TVs do not each ask Yahoo. A symbol that is not in it, or a file older than 3 hours, is asked of Yahoo itself.
-const MARKET_URL = 'https://raw.githubusercontent.com/tshi-dev/UrTV/data-markets/markets/markets.json';
+const MARKET_URL = 'https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/data-markets/markets/markets.json';
 const MARKET_TRUST_MS = 3*3600000;
 let MARKET_FILE = null;   // {updated, quotes: {symbol: {p, v, c, t}}}
 async function loadMarketFile(){
