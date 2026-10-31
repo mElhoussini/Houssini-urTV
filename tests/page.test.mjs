@@ -2276,7 +2276,11 @@ for (const [width, height] of [[1920, 1080], [1280, 720], [960, 540]]) {
         return h === 'fail' ? r.abort() : void setTimeout(() => r.fulfill({ contentType: 'image/jpeg', body: badgePng }).catch(() => {}), h);
       }
       const i = u.indexOf('/master/'), rel = i > 0 ? u.slice(i + 8) : '';
-      if (/^(assets\/(backgrounds|fonts)|photos)\//.test(rel)) return r.fulfill({ path: path.join(ROOT, rel), headers: { 'Access-Control-Allow-Origin': '*' } });
+      if (/^(assets\/(backgrounds|fonts)|photos)\//.test(rel)) {
+        const asset = path.join(ROOT, rel);
+        if (existsSync(asset)) return r.fulfill({ path: asset, headers: { 'Access-Control-Allow-Origin': '*' } });
+        return r.abort();
+      }
       return r.abort();
     });
     await ctx.addInitScript(i => { localStorage.setItem('photoIndex', i); window.__bg = [];
