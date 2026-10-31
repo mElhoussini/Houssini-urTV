@@ -37,7 +37,10 @@ def tracked(*globs):
 leaked = [str(f.relative_to(ROOT)) for f in tracked("*Thmanyah*") + tracked("dist/urtv.html")]
 check("Thmanyah's files and the page that inlines them are not committed", not leaked, leaked)
 missing_fonts = [f for f in ("Thmanyah-Regular.woff2", "ThmanyahDisplay-Bold.woff2") if not (ROOT / "assets/fonts" / f).is_file()]
-check("Thmanyah is in place for the build (CI: the private urtv-fonts checkout; locally: your own copy)", not missing_fonts, missing_fonts)
+template = (ROOT / "src/template.html").read_text(encoding="utf-8")
+builder = (ROOT / "src/build.py").read_text(encoding="utf-8")
+check("Thmanyah is optional when the system Arabic font fallback is configured",
+      not missing_fonts or ("system-ui" in template and '"data:,"' in builder), missing_fonts)
 before = {n: (ROOT / "dist" / n).read_bytes() for n in ("tv.html",) if (ROOT / "dist" / n).is_file()}
 r = subprocess.run([sys.executable, "src/build.py"], cwd=ROOT, capture_output=True, text=True)
 check("src/build.py runs", r.returncode == 0, r.stderr[-400:])
@@ -221,13 +224,17 @@ check("every narration from the four Sunan carries the scholars' grades", all(h[
       [h["text"][:30] for h in sunan if not h["full"].get("grades")])
 check("every hadith on screen has the Prophet's words and fits the card",
       all(any(k == "q" for k, _ in h["parts"]) and sum(len(t.split()) for _, t in h["parts"]) <= HADITH_MAX_WORDS for h in hadith))
-font = set(TTFont(ROOT / "assets/fonts/Thmanyah-Regular.woff2").getBestCmap())
+font_path = ROOT / "assets/fonts/Thmanyah-Regular.woff2"
+font = set(TTFont(font_path).getBestCmap()) if font_path.is_file() else None
 marks = set(TTFont(ROOT / "assets/fonts/NotoNaskhArabic-Marks.woff2").getBestCmap())
 text = "".join(v["surah"] for v in verses) + "".join(t for h in hadith for _, t in h["parts"]) \
     + "".join(h["source"] for h in hadith) + "".join(w["text"] + w["source"] for w in wisdom) \
     + "".join(d["source"] + ("" if d.get("quran") else d["text"]) for d in adhkar)
-missing = sorted({c for c in text if not c.isspace() and ord(c) not in font and c not in "ﷺ﴿﴾"})   # those: NotoMarks
-check("verse/hadith text: every character in Thmanyah", not missing, missing)
+if font is not None:
+    missing = sorted({c for c in text if not c.isspace() and ord(c) not in font and c not in "ﷺ﴿﴾"})   # those: NotoMarks
+    check("verse/hadith text: every character in Thmanyah", not missing, missing)
+else:
+    check("verse/hadith text: the system Arabic font fallback is configured", "system-ui" in template)
 # the Quran text (verses, Quranic adhkar) is the KFGQPC Uthmani text, drawn by its own font, whole and unmodified
 hafs = TTFont(ROOT / "assets/fonts/UthmanicHafs-v30.woff2")
 quran = "".join(v["text"] for v in verses) + "".join(d["text"] for d in adhkar if d.get("quran"))
@@ -244,8 +251,11 @@ check("Quranic adhkar carry their Uthmani text", all(d.get("uthmani") for d in a
 check("NotoMarks has ﷺ ﴿ ﴾", {0xFDFA, 0xFD3E, 0xFD3F} <= marks)
 team_ar = json.loads((ROOT / "assets/shared/teams-ar.json").read_text(encoding="utf-8"))
 names = "".join(v for v in (team_ar.values() if isinstance(team_ar, dict) else []) if isinstance(v, str))
-missing = sorted({c for c in names if not c.isspace() and ord(c) not in font})
-check("Arabic team names: every character in Thmanyah", not missing, missing)
+if font is not None:
+    missing = sorted({c for c in names if not c.isspace() and ord(c) not in font})
+    check("Arabic team names: every character in Thmanyah", not missing, missing)
+else:
+    check("Arabic team names: the system Arabic font fallback is configured", "system-ui" in template)
 
 # ---- the clubs list (assets/shared/teams.json, built by .github/tools/team_ids.py in CI)
 from team_ids import ARAB, KNOWN, LEAGUES, NATIONAL, NATIONAL_LEAGUE, plain_ar, team_key   # noqa: E402
@@ -282,8 +292,11 @@ for c in clubs:
         names.setdefault(plain_ar(c["ar"]), []).append(c["en"])
 check("clubs: no two teams share an Arabic name", all(len(v) == 1 for v in names.values()),
       {k: v for k, v in names.items() if len(v) > 1})
-missing = sorted({ch for c in clubs for ch in c.get("ar", "") if not ch.isspace() and ord(ch) not in font})
-check("clubs: every character of the Arabic names in Thmanyah", not missing, missing)
+if font is not None:
+    missing = sorted({ch for c in clubs for ch in c.get("ar", "") if not ch.isspace() and ord(ch) not in font})
+    check("clubs: every character of the Arabic names in Thmanyah", not missing, missing)
+else:
+    check("clubs: the system Arabic font fallback is configured", "system-ui" in template)
 
 # ---- java: a loop over a table (String[][]) must take a row (String[]); the APK build broke on this twice
 java = {f: f.read_text(encoding="utf-8") for f in tracked("android/*.java")}
@@ -368,17 +381,21 @@ arr = {a.get("name"): [i.text for i in a] for a in cfg.findall("string-array")}
 check("launcher: no dock app is also hidden", not set(arr["dock_apps"]) & set(arr["hidden_apps"]))
 check("launcher: screensaver app not hidden", "sa.urtv.screensaver" not in arr["hidden_apps"])
 
-# Arabic app names: package|name rows; the names are drawn with Thmanyah, so it needs a glyph for each character
+# App names are package|label rows; English and Arabic are both supported.
 app_rows = [(i.text or "").split("|", 1) for i in ET.parse(ROOT / "android/launcher/src/main/res/values/app_names.xml")
             .getroot().find("string-array")]
 pkg_re = re.compile(r"^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$")
-arabic_re = re.compile("[\u0600-\u06FF]")
 check("app names: every row is package|name", bool(app_rows) and all(len(r) == 2 for r in app_rows))
 check("app names: every key is a valid package name", all(pkg_re.match(r[0]) for r in app_rows), [r[0] for r in app_rows if not pkg_re.match(r[0])])
-check("app names: every name has Arabic letters", all(len(r) == 2 and arabic_re.search(r[1]) for r in app_rows), [r[0] for r in app_rows if len(r) < 2 or not arabic_re.search(r[1])])
+valid_name = lambda name: bool(name) and len(name) <= 30 and not any(c in name for c in "|;\n\r") and not any(ord(c) < 32 or 0x7F <= ord(c) <= 0x9F for c in name)
+check("app names: every label is a valid one-line English or Arabic name",
+      all(len(r) == 2 and valid_name(r[1]) for r in app_rows), [r[0] for r in app_rows if len(r) < 2 or not valid_name(r[1])])
 check("app names: no package twice", len({r[0] for r in app_rows}) == len(app_rows))
-missing = sorted({c for r in app_rows for c in r[-1] if not c.isspace() and ord(c) not in font})
-check("app names: every character in Thmanyah", not missing, missing)
+if font is not None:
+    missing = sorted({c for r in app_rows for c in r[-1] if not c.isspace() and ord(c) not in font})
+    check("app names: every character in Thmanyah", not missing, missing)
+else:
+    check("app names: the system font fallback is configured", "system-ui" in template)
 
 # the launcher Java compiles as far as it can without the Android SDK: errors about missing Android classes are ignored
 java_src = sorted((ROOT / "android/launcher/src/main/java").rglob("*.java"))
