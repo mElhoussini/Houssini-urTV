@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The name shown for an app: the one the owner's agent gave it on this TV (optimize/dock.sh name), else its own if it
- * has Arabic letters, else the Arabic one from res/values/app_names.xml, else its own.
+ * The name shown for an app: the one the owner's agent gave it on this TV (optimize/dock.sh name), else the English
+ * name from res/values/app_names.xml, else its own.
  */
 final class AppNames {
     static final int MAX_LEN = 30;
-    private static Map<String, String> table;   // package -> Arabic name, read once
+    private static Map<String, String> table;   // package -> preferred English name, read once
 
     private AppNames() {}
 
@@ -23,17 +23,15 @@ final class AppNames {
     static String label(Context c, ResolveInfo ri, Map<String, String> given) {
         String set = given.get(ri.activityInfo.packageName);
         if (set != null) return set;
-        String own = String.valueOf(ri.loadLabel(c.getPackageManager()));
-        if (hasArabic(own)) return own;
-        String ar = table(c).get(ri.activityInfo.packageName);
-        return ar != null ? ar : own;
+        String preferred = table(c).get(ri.activityInfo.packageName);
+        if (preferred != null) return preferred;
+        return String.valueOf(ri.loadLabel(c.getPackageManager()));
     }
 
     /** Where the shown name comes from, for dock.sh names: agent, own, table. */
     static String source(Context c, ResolveInfo ri, Map<String, String> given) {
         if (given.containsKey(ri.activityInfo.packageName)) return "agent";
-        String own = String.valueOf(ri.loadLabel(c.getPackageManager()));
-        return !hasArabic(own) && table(c).containsKey(ri.activityInfo.packageName) ? "table" : "own";
+        return table(c).containsKey(ri.activityInfo.packageName) ? "table" : "own";
     }
 
     /** Names set on this TV, kept as "pkg|name" lines in the home screen's preferences. */
@@ -52,18 +50,13 @@ final class AppNames {
         Dock.prefs(c).edit().putString("names", b.toString()).apply();
     }
 
-    /** A name the agent may set: Arabic letters, one line, at most MAX_LEN characters, no separators. */
+    /** A name the agent may set: one line, at most MAX_LEN characters, no separators or control characters. */
     static boolean valid(String name) {
-        return name.length() <= MAX_LEN && hasArabic(name) && name.indexOf('|') < 0 && name.indexOf(';') < 0
-            && name.indexOf('\n') < 0;
-    }
-
-    static boolean hasArabic(String s) {
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            if ((ch >= 0x0600 && ch <= 0x06FF) || (ch >= 0x0750 && ch <= 0x077F) || (ch >= 0xFB50 && ch <= 0xFEFC)) return true;
+        if (name.isEmpty() || name.length() > MAX_LEN || name.indexOf('|') >= 0 || name.indexOf(';') >= 0) return false;
+        for (int i = 0; i < name.length(); i++) {
+            if (Character.isISOControl(name.charAt(i))) return false;
         }
-        return false;
+        return true;
     }
 
     private static synchronized Map<String, String> table(Context c) {

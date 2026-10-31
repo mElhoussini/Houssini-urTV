@@ -54,7 +54,7 @@ public class DockReceiver extends BroadcastReceiver {
                 setResultData(b.toString().trim());
                 return;
             }
-            case "sa.urtv.home.NAMES": {   // for the owner's agent: which names are still not Arabic, and their own name
+            case "sa.urtv.home.NAMES": {   // for the owner's agent: the displayed name, the app's own name, and the source
                 Map<String, String> given = AppNames.given(c);
                 StringBuilder b = new StringBuilder();
                 for (ResolveInfo ri : Dock.catalogue(c)) {
@@ -76,7 +76,7 @@ public class DockReceiver extends BroadcastReceiver {
                     String pkg = pair.substring(0, bar).trim(), name = pair.substring(bar + 1).trim();
                     if (!apps.containsKey(pkg)) { skipped.add(pkg + " (not on the home screen)"); continue; }
                     if (name.isEmpty()) { given.remove(pkg); done.add(pkg + " (its usual name again)"); continue; }
-                    if (!AppNames.valid(name)) { skipped.add(pkg + " (Arabic, one line, up to " + AppNames.MAX_LEN + " characters)"); continue; }
+                    if (!AppNames.valid(name)) { skipped.add(pkg + " (one line, up to " + AppNames.MAX_LEN + " characters, no separators or control characters)"); continue; }
                     given.put(pkg, name);
                     done.add(pkg + " = " + name);
                 }

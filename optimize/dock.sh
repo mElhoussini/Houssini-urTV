@@ -8,7 +8,7 @@
 #   optimize/dock.sh hide PKG ...          take these off the home screen (all its lists)
 #   optimize/dock.sh show PKG ...          put these on it, even against the rules (the TV's own home doesn't list them)
 #   optimize/dock.sh names                 every app's name: package | shown | its own | from (agent, own, table)
-#   optimize/dock.sh name PKG 'الاسم' ...   give apps an Arabic name on this TV (pairs; '' = its usual name again)
+#   optimize/dock.sh name PKG 'name' ...    give apps a custom name on this TV (pairs; '' = its usual name again)
 #   optimize/dock.sh names-clear           every app back to its usual name
 #   optimize/dock.sh input-names           the TV's inputs: id | shown | the TV's own name | ours | CEC device name | state (connected/standby/disconnected)
 #   optimize/dock.sh input-name ID 'PS5'   name an input in the sources list on this TV (ID from input-names; '' = the TV's own name again)

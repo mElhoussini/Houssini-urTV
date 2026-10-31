@@ -434,12 +434,10 @@ mine (on the step 1 screenshot) or that I asked for; `optimize/dock.sh hide <pkg
 `optimize/lists/tcl-safe.txt` or `tcl-optional.txt`; never hide one in `keep.txt`. Any other you are unsure about:
 list it for me in step 7 instead of choosing.
 
-App names: the home screen shows an app's name in Arabic when the app has one or our list knows it; give every
-other app (shown name with no Arabic letters) its Arabic name yourself with `dock.sh name`. Use the name Arabic
-speakers use for it: the brand's own Arabic name if it has one (شاهد، ثمانية، أنغامي), else the usual Arabic
-spelling (نتفليكس، يوتيوب، ديزني +، ابل تي في), and for a tool, what it does (الإعدادات، الملفات، المتصفح، المصادر).
-Up to 30 characters, no ' ; or |. Leave an app whose shown name is already Arabic. In step 7, list the names you
-gave so I can change any (`dock.sh name <pkg> '<اسم آخر>'`, or `''` for its usual name).
+App names: the home screen uses the English name in `android/launcher/src/main/res/values/app_names.xml` when known,
+otherwise the app's own name. A name the owner sets with `dock.sh name` takes priority. Custom names may be English or
+Arabic, one line, up to 30 characters, with no ' ; or |. In step 7, list any custom names you set so I can change them
+(`dock.sh name <pkg> '<new name>'`, or `''` for the app's usual name).
 
 Take every id from `find-team`'s output, which comes from our list of every club in the app's leagues and the
 national teams; never guess one. If it gives several, pick the one I meant (a Saudi club before a namesake abroad).
