@@ -31,7 +31,6 @@ from cryptography.hazmat.primitives.serialization import pkcs12
 from cryptography.x509.oid import NameOID
 
 ALIAS = b"urtv"   # android/*/build.gradle signs with this alias
-REPO = "tshi-dev/UrTV"
 
 
 def make(password):
@@ -59,9 +58,12 @@ def main():
     secret = {"ANDROID_KEYSTORE_B64": base64.b64encode(data).decode(), "ANDROID_KEYSTORE_PASSWORD": password}
     gh = gh_ready()
     if gh:
+        repo = github_repo(gh)
+        if not repo:
+            sys.exit("Could not identify this GitHub repository. Run this script from its checked-out folder, or add the secrets manually.")
         for name, value in secret.items():   # the value goes in on stdin, never on the command line
-            subprocess.run([gh, "secret", "set", name, "--repo", REPO], input=value, text=True, check=True)
-        print(f"Both secrets are now in {REPO}. The next build signs with this key.")
+            subprocess.run([gh, "secret", "set", name, "--repo", repo], input=value, text=True, check=True)
+        print(f"Both secrets are now in {repo}. The next build signs with this key.")
         return
     print("GitHub CLI isn't signed in, so add these two secrets by hand (see the top of this file):\n")
     for name, value in secret.items():
@@ -72,6 +74,13 @@ def gh_ready():
     """GitHub CLI's path if it is installed and signed in, else None."""
     gh = shutil.which("gh")
     return gh if gh and subprocess.run([gh, "auth", "status"], capture_output=True).returncode == 0 else None
+
+
+def github_repo(gh):
+    """Get the repository for the current checkout, so a fork never writes secrets upstream."""
+    result = subprocess.run([gh, "repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"],
+                            capture_output=True, text=True)
+    return result.stdout.strip() if result.returncode == 0 else None
 
 
 if __name__ == "__main__":
