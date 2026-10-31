@@ -5,7 +5,7 @@ package sa.urtv.screensaver;
  * next serves from next's prefix. This maps one to the other, so both channels' pages are answered from the APK.
  */
 final class Channel {
-    static final String MASTER = "https://raw.githubusercontent.com/tshi-dev/UrTV/master/";
+    static final String MASTER = "https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/master/";
 
     private Channel() {}
 

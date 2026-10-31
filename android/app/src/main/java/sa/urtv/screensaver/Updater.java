@@ -19,9 +19,9 @@ final class Updater {
 
     private static final String OFF = "التحديث التلقائي متوقف";
     private static final String RECENT = "تم الفحص مؤخراً";
-    private static final String LATEST_URL = "https://github.com/tshi-dev/UrTV/releases/latest";
-    private static final String VERSION_URL = "https://github.com/tshi-dev/UrTV/releases/download/apk-latest/version.txt";
-    private static final String NEXT_VERSION_URL = "https://github.com/tshi-dev/UrTV/releases/download/apk-next/version.txt";
+    private static final String LATEST_URL = "https://github.com/mElhoussini/Houssini-urTV/releases/latest";
+    private static final String VERSION_URL = "https://github.com/mElhoussini/Houssini-urTV/releases/download/apk-latest/version.txt";
+    private static final String NEXT_VERSION_URL = "https://github.com/mElhoussini/Houssini-urTV/releases/download/apk-next/version.txt";
 
     private Updater() {}
 

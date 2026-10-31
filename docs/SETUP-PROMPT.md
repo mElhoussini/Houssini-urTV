@@ -22,7 +22,7 @@ Or in the Claude desktop app: the **Code** tab, with a **local** folder on this 
 
 ---
 
-Set up my Android TV / Google TV with **تلفزيونك** from https://github.com/tshi-dev/UrTV: a faster TV
+Set up my Android TV / Google TV with **تلفزيونك** from https://github.com/mElhoussini/Houssini-urTV: a faster TV
 (bloat off, safely), an Arabic home screen, and the screensaver «شاشة تلفزيونك». Talk to me in Arabic (or my
 language); keep commands in English.
 
@@ -125,7 +125,7 @@ On a Mac with only the system Python 3.9 and no Homebrew, `uv python install 3.1
 with `curl -LsSf https://astral.sh/uv/install.sh | sh`); the scripts find uv's Python by themselves.
 ```
 git config --global core.longpaths true   # Windows only, once (a deep folder breaks git: «Filename too long»)
-git clone --depth 1 https://github.com/tshi-dev/UrTV     # only the latest version: much faster. On Windows into a short folder: git clone --depth 1 https://github.com/tshi-dev/UrTV C:/UrTV (a deep one breaks Python and git: «Filename too long»)
+git clone --depth 1 https://github.com/mElhoussini/Houssini-urTV     # only the latest version: much faster. On Windows into a short folder: git clone --depth 1 https://github.com/mElhoussini/Houssini-urTV C:/UrTV (a deep one breaks Python and git: «Filename too long»)
 cd UrTV                                # on Windows: cd C:/UrTV
 git pull                               # always the latest (a command of its own, not joined with the others)
 optimize/find-tv.sh --check            # Windows: always through Git Bash (below), never plain `python`
@@ -137,7 +137,7 @@ optimize/find-tv.sh --check            # Windows: always through Git Bash (below
   `winget install -e --id Git.Git --source winget`, `winget install -e --id Python.Python.3.12 --source winget`, `irm https://claude.ai/install.ps1 | iex`,
   then a new PowerShell window and `claude`). A chat that only links to my computer's folders or screen does not
   run commands on it, so it does not count. Give me the one line to paste there:
-  «Set up my TV with https://github.com/tshi-dev/UrTV: clone it and follow `docs/SETUP-PROMPT.md` step by step. You are on a computer on the same Wi-Fi as the TV.»
+  «Set up my TV with https://github.com/mElhoussini/Houssini-urTV: clone it and follow `docs/SETUP-PROMPT.md` step by step. You are on a computer on the same Wi-Fi as the TV.»
   Don't look for workarounds.
 
 **Android 11 or newer, and port 5555 does not answer: pair with «Wireless debugging».** Some Android 11+ TVs (a Skyworth on
@@ -209,7 +209,7 @@ Lines starting with `!!` are the scripts telling you to stop and act. These are 
 | `0xC0000022` or `NtCreateDirectoryObject` starting Git Bash (Codex) | Codex's sandbox can't start Git Bash | run it outside the sandbox (step 0, «Codex on Windows») |
 | `you cannot ask for escalated permissions`, `rejected by policy` (Codex) | Codex's approvals are not on «Approve for me» | message 1 again, wait for «تم», then the same command |
 | `ModuleNotFoundError: No module named 'adb_shell'`, or `!! The Python packages aren't in optimize/venv` | `optimize/setup.sh` didn't finish (often pip had no network) | `optimize/setup.sh` again until it ends with «✓ Python ADB client»; its `!!` line says what is wrong. Then the same command; don't stop for this |
-| `!! This folder's path is too long for Windows`, `Filename too long`, or `DLL load failed … too long` | the UrTV folder sits too deep for Windows | clone it again into a short folder: `git clone -c core.longpaths=true https://github.com/tshi-dev/UrTV C:/UrTV`, and carry on there (or once, `git config --global core.longpaths true`, then clone again; a short folder like `C:/UrTV` is still best) |
+| `!! This folder's path is too long for Windows`, `Filename too long`, or `DLL load failed … too long` | the UrTV folder sits too deep for Windows | clone it again into a short folder: `git clone -c core.longpaths=true https://github.com/mElhoussini/Houssini-urTV C:/UrTV`, and carry on there (or once, `git config --global core.longpaths true`, then clone again; a short folder like `C:/UrTV` is still best) |
 | `!! No working Python 3 here`, or `python` opens the Microsoft Store | Python not installed, or only Windows' Store shortcut | ask me once, install it yourself (`winget install -e --id Python.Python.3.12 --source winget --accept-source-agreements --accept-package-agreements`), then the same command again in Git Bash |
 | `INSTALL_FAILED_VERIFICATION_FAILURE: Install not allowed` (seen on Android 12–14 for the home app, which targets an older SDK than Play Protect likes) | Play Protect checks apps installed over ADB and refused it | tell me, in Arabic, to watch the TV and press «تثبيت على أي حال» (Install anyway) if Play Protect shows a message (`install.sh` prints these words). `install.sh` switches `verifier_verify_adb_installs` to 0 for that install only, retries once and puts the old value back (it says so in one line); if it still fails, the line shows the TV's own message and the same words. **Never** turn the verifier off for the whole TV |
 | `Could not download …` on Windows with `CRYPT_E_NO_REVOCATION_CHECK` / `revocation` | Windows' curl (Schannel) can't reach the certificate revocation server | nothing: `install.sh` retries 3 times and, on that error, once more with `--ssl-revoke-best-effort`; if it keeps failing, check the internet/proxy and run the same command again |
@@ -263,7 +263,7 @@ Lines starting with `!!` are the scripts telling you to stop and act. These are 
 | `!! The screensaver is installed but NOT switched on` | the TV's WebView is older than 80, so the page would not run; the TV keeps its own screensaver | tell me in Arabic to update «Android System WebView» (`optimize/precheck.sh webview-store`), then `optimize/install.sh saver` again. Don't select the screensaver by hand |
 | `!! Could not read which TV this is` (tv.py) | the TV gave no serial, make or model (still waking, or a busy shell); nothing was changed | wait a minute, then the same command; never skip the check |
 | `!! The TV stopped answering while it ran this command … NOT sent again` | a command that must not run twice (a task added or deleted, a photo deleted by number, a key press) lost its reply; it may or may not have happened | look first (`optimize/saver.sh tasks list`, `optimize/photos.sh list`, or a screenshot), run it again only if it did not happen |
-| `!! Could not download …` (install.sh) | no such build at that tag, or no internet on this computer | check `APK_TAG` (unset = the latest) and the releases page https://github.com/tshi-dev/UrTV/releases, and that the computer is online; then the same command |
+| `!! Could not download …` (install.sh) | no such build at that tag, or no internet on this computer | check `APK_TAG` (unset = the latest) and the releases page https://github.com/mElhoussini/Houssini-urTV/releases, and that the computer is online; then the same command |
 | `!! GitHub rate limit, try later` (install.sh extras) | GitHub allows only a few anonymous requests an hour | wait a few minutes, then `optimize/run.sh` again (it redoes the extras step) |
 | `Done, with problems:` and `optimize/run.sh` exits 1 | every step ran, but `report.md` has `!!` lines (printed under it) | read them, fix what each says (this table), then `optimize/run.sh` again: only the report step is redone |
 | `ADB dropped during the switch; the TV is back, trying the switch again` | Wi-Fi ADB dropped while the home was being switched; the script waited for the TV (up to 10 minutes) and is doing the switch a second time, the safety switch armed again | nothing, wait; only if it ends in `!!` follow that line |

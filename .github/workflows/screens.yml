@@ -2,7 +2,7 @@ name: Screens
 
 # Real pictures of the Android screens, for looking at a design without a TV: both apps are built (debug, same key), put on an Android TV
 # emulator (1920x1080), driven with the remote's keys, and screencap's PNGs are pushed to the data-screens branch, one folder per run
-# plus latest/:  https://raw.githubusercontent.com/tshi-dev/UrTV/data-screens/latest/<name>.png  (the list: latest/index.txt).
+# plus latest/:  https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/data-screens/latest/<name>.png  (the list: latest/index.txt).
 # The script that takes them is .github/screens/shoot.sh; a shot that cannot be taken is skipped, never fails the run.
 
 on:

@@ -65,7 +65,7 @@ def page_checks(label, files):
     check(f"{label}: the page is Arabic and right to left", '<html lang="ar" dir="rtl">' in html)
     check(f"{label}: the settings data and the shell come before the page's own script",
           0 < html.find('<script src="data.js">') < html.find('<script src="shell.js">') < html.find("<script>"))
-    left = re.findall(r"https://raw\.githubusercontent\.com/tshi-dev/UrTV/master/assets/\S+?(?=[\"')])", html)
+    left = re.findall(r"https://raw\.githubusercontent\.com/mElhoussini/Houssini-urTV/master/assets/\S+?(?=[\"')])", html)
     check(f"{label}: no font or bundled photo is still asked of GitHub", not left, left)
     refs = set(re.findall(r'(?:src=|url\(|u:)"?((?:fonts|bg)/[A-Za-z0-9_.-]+)', html))
     check(f"{label}: every font and photo the page names is in the package", bool(refs) and all(r in files for r in refs), sorted(r for r in refs if r not in files))

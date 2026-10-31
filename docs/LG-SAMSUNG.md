@@ -94,7 +94,7 @@ You need: the TV and a computer on the **same Wi-Fi**, Python 3 and OpenSSH (`ss
 2. **On the computer:**
 
    ```
-   git clone https://github.com/tshi-dev/UrTV && cd UrTV
+   git clone https://github.com/mElhoussini/Houssini-urTV && cd UrTV
    python3 webos/build.py
    python3 webos/install.py <TV-IP>
    ```

@@ -5,7 +5,7 @@ public final class UpdateText {
     public static final String TITLE = "تحديث تلفزيوني";
     public static final String CHECK = "تحقق من التحديث";
     public static final String OFFLINE = "ما فيه اتصال بالإنترنت";
-    public static final String REPO = "github.com/tshi-dev/UrTV";
+    public static final String REPO = "github.com/mElhoussini/Houssini-urTV";
     /** The three lines the owner is sent away with when the TV can't update itself; the address goes small under them. */
     public static final String AI_MESSAGE = "التحديث من التلفزيون ما يشتغل على هذا الجهاز.\nاطلب من مساعد الذكاء الاصطناعي على جهازك:\nحدّث تلفزيوني";
     public static final String NEED_PERMISSION = "لازم تسمح لتطبيق تلفزيونك بتثبيت التحديثات.";

@@ -16,8 +16,8 @@ Path 1 needs no other device at all, so it is also the answer for an iPad that c
    adb is used: nothing listens on the network.)
 2. **Install the two apps with the TV's Downloader app** (the free one from the TV's store; allow it «install unknown apps» when it asks). In
    Downloader type these two codes, one after the other, and install each: **2927902** (the screensaver) and **9378345** (the home app). They are short links (aftv.news) to these two addresses, which also work typed in full:
-   - `https://github.com/tshi-dev/UrTV/releases/download/apk-latest/urtv-screensaver.apk`
-   - `https://github.com/tshi-dev/UrTV/releases/download/apk-latest/urtv-home.apk`
+   - `https://github.com/mElhoussini/Houssini-urTV/releases/download/apk-latest/urtv-screensaver.apk`
+   - `https://github.com/mElhoussini/Houssini-urTV/releases/download/apk-latest/urtv-home.apk`
 
    (They are built and signed by GitHub Actions: this is the same pair `optimize/install.sh` installs. Never use an APK built anywhere else: it could not update later.)
 3. **Open «إعداد تلفزيوني»** from the TV's apps row. The screen shows exactly what it will do, in order. Press **«ابدأ»**.
@@ -67,7 +67,7 @@ Install **Termux from F-Droid or from its GitHub releases** (the Play Store one 
 pkg update
 pkg install python git curl python-cryptography python-pillow
 pkg install android-tools          # only if the TV pairs by «Wireless debugging» (some Android 11+ sets)
-git clone https://github.com/tshi-dev/UrTV && cd UrTV
+git clone https://github.com/mElhoussini/Houssini-urTV && cd UrTV
 optimize/setup.sh                  # Termux is recognised: the venv uses Termux's own cryptography and Pillow
 ```
 
@@ -90,7 +90,7 @@ Install **iSH** from the App Store. iOS asks once for **Local Network** access: 
 ```
 apk add bash git curl python3 py3-pip py3-cryptography py3-pillow
 apk add android-tools              # only for «Wireless debugging» pairing; may not exist for iSH, see below
-git clone https://github.com/tshi-dev/UrTV && cd UrTV
+git clone https://github.com/mElhoussini/Houssini-urTV && cd UrTV
 bash optimize/setup.sh             # Alpine is recognised: the venv uses Alpine's own cryptography and Pillow
 optimize/find-tv.sh use <the TV's address>
 optimize/run.sh

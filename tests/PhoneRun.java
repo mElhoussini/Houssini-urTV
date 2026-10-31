@@ -574,15 +574,15 @@ public final class PhoneRun {
         check("a digest that is not 64 hex digits is refused", "unsigned".equals(UpdateRules.verify("p", "p", 5, 6, new HashSet<>(Arrays.asList("zz")), new HashSet<>(Arrays.asList("zz")))), "");
         check("version.txt is read as a build number", UpdateRules.buildOf("3.51\n") == 51 && UpdateRules.buildOf("3.5.1") == -1 && UpdateRules.buildOf("<html>") == -1 && UpdateRules.buildOf(null) == -1 && UpdateRules.buildOf("") == -1, "");
         check("the APKs come from the apk-latest release over https, the screensaver first and the home screen last",
-            UpdateRules.BASE.equals("https://github.com/tshi-dev/UrTV/releases/download/apk-latest/") && UpdateRules.APKS[0][0].equals("sa.urtv.screensaver") && UpdateRules.APKS[1][0].equals("sa.urtv.home"), "");
+            UpdateRules.BASE.equals("https://github.com/mElhoussini/Houssini-urTV/releases/download/apk-latest/") && UpdateRules.APKS[0][0].equals("sa.urtv.screensaver") && UpdateRules.APKS[1][0].equals("sa.urtv.home"), "");
         check("the update channel: nothing, latest and any unknown word read the latest; only next reads apk-next",
             UpdateRules.baseFor(null).equals(UpdateRules.BASE) && UpdateRules.baseFor("latest").equals(UpdateRules.BASE) && UpdateRules.baseFor("nope").equals(UpdateRules.BASE)
-            && UpdateRules.baseFor("next").equals("https://github.com/tshi-dev/UrTV/releases/download/apk-next/"), "");
+            && UpdateRules.baseFor("next").equals("https://github.com/mElhoussini/Houssini-urTV/releases/download/apk-next/"), "");
         check("a download is only ever a file of our two releases",
             UpdateRules.isReleaseUrl(UpdateRules.BASE + "urtv-home.apk") && UpdateRules.isReleaseUrl(UpdateRules.NEXT_BASE + "urtv-home.apk")
             && UpdateRules.isReleaseUrl(UpdateRules.NEXT_BASE + "version.txt") && UpdateRules.isReleaseUrl(UpdateRules.BASE + "urtv-screensaver.apk")
             && !UpdateRules.isReleaseUrl(UpdateRules.BASE + "other.apk") && !UpdateRules.isReleaseUrl(UpdateRules.NEXT_BASE + "../apk-latest/urtv-home.apk.evil") && !UpdateRules.isReleaseUrl(UpdateRules.BASE)
-            && !UpdateRules.isReleaseUrl("https://github.com/tshi-dev/UrTV/releases/download/v3.1/urtv-home.apk") && !UpdateRules.isReleaseUrl("https://example.org/") && !UpdateRules.isReleaseUrl(null), "");
+            && !UpdateRules.isReleaseUrl("https://github.com/mElhoussini/Houssini-urTV/releases/download/v3.1/urtv-home.apk") && !UpdateRules.isReleaseUrl("https://example.org/") && !UpdateRules.isReleaseUrl(null), "");
     }
 
     static void qr() {

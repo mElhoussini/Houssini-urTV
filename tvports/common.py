@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-REPO = "https://raw.githubusercontent.com/tshi-dev/UrTV/master/"
+REPO = "https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/master/"
 FONT_NAMES = ["Thmanyah-Light.woff2", "Thmanyah-Regular.woff2", "Thmanyah-Medium.woff2", "ThmanyahDisplay-Bold.woff2", "UthmanicHafs-v30.woff2"]
 VERSION = "0.1.0"   # the apps' own version (appinfo.json, config.xml); not the page's
 

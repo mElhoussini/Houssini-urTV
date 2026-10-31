@@ -24,9 +24,9 @@ public final class VersionsRun {
         check("version.txt: 3.51 with its newline", "3.51".equals(Versions.fromText("3.51\n")), "");
         check("version.txt: a page or an error is not a version", Versions.fromText("<html>404</html>") == null && Versions.fromText("") == null
                 && Versions.fromText(null) == null && Versions.fromText("3.51 extra") == null && Versions.fromText("Not Found") == null, "");
-        check("redirect to the numbered tag", "3.51".equals(Versions.fromTag("https://github.com/tshi-dev/UrTV/releases/tag/v3.51")), "");
-        check("redirect to apk-latest (what GitHub gives today) is not a version", Versions.fromTag("https://github.com/tshi-dev/UrTV/releases/tag/apk-latest") == null
-                && Versions.fromTag("https://github.com/tshi-dev/UrTV/releases/tag/apk-next") == null && Versions.fromTag(null) == null, "");
+        check("redirect to the numbered tag", "3.51".equals(Versions.fromTag("https://github.com/mElhoussini/Houssini-urTV/releases/tag/v3.51")), "");
+        check("redirect to apk-latest (what GitHub gives today) is not a version", Versions.fromTag("https://github.com/mElhoussini/Houssini-urTV/releases/tag/apk-latest") == null
+                && Versions.fromTag("https://github.com/mElhoussini/Houssini-urTV/releases/tag/apk-next") == null && Versions.fromTag(null) == null, "");
         check("3.100 from the file is newer than 3.99", newer(Versions.fromText("3.100"), "3.99"), "");
         // the name is the VERSION file's and the comparison is by BUILD (version.txt stays "3.<build>")
         check("the build in version.txt: 3.151 gives 151, anything else -1", Versions.buildOf("3.151\n") == 151 && Versions.buildOf("3.9") == 9 && Versions.buildOf("Not Found") == -1
@@ -36,8 +36,8 @@ public final class VersionsRun {
         check("the newest build for the agent: 3.142 (before the names) stays «3.142», 155 is «4.0 (build 155)»", "3.142".equals(Versions.otherEn("4.0", 142)) && "3.153".equals(Versions.otherEn("4.0", 153))
                 && "4.0 (build 154)".equals(Versions.otherEn("4.0", 154)) && "4.0 (build 155)".equals(Versions.otherEn("4.0", 155)), "");
         check("a named release tag (v4.0.151) gives the version.txt form 3.151; the old v3.51 and apk-latest are as before",
-                "3.151".equals(Versions.fromTag("https://github.com/tshi-dev/UrTV/releases/tag/v4.0.151")) && "3.51".equals(Versions.fromTag("https://github.com/tshi-dev/UrTV/releases/tag/v3.51"))
-                && Versions.fromTag("https://github.com/tshi-dev/UrTV/releases/tag/v4.0") != null && Versions.fromTag("https://github.com/tshi-dev/UrTV/releases/tag/apk-latest") == null, "");
+                "3.151".equals(Versions.fromTag("https://github.com/mElhoussini/Houssini-urTV/releases/tag/v4.0.151")) && "3.51".equals(Versions.fromTag("https://github.com/mElhoussini/Houssini-urTV/releases/tag/v3.51"))
+                && Versions.fromTag("https://github.com/mElhoussini/Houssini-urTV/releases/tag/v4.0") != null && Versions.fromTag("https://github.com/mElhoussini/Houssini-urTV/releases/tag/apk-latest") == null, "");
         // an INSTALLED 3.142 (frozen copy of its Updater: fromText, then major-first compare of "3.N" against its own versionName) fed the new version.txt
         String versionTxt = "3." + 151 + "\n";   // exactly what the workflow writes
         String old = Versions.fromText(versionTxt);

@@ -82,7 +82,7 @@ def build(preview=False):
                 ("usr/palm/packages/" + app_id + "/packageinfo.json", package)]
     size = sum(len(d) for d in app.values()) + len(package)
     control = ("Package: %s\nVersion: %s\nSection: misc\nPriority: optional\nArchitecture: all\nInstalled-Size: %d\n"
-               "Maintainer: UrTV <https://github.com/tshi-dev/UrTV>\nDescription: Arabic prayer-times and clock screen.\n"
+               "Maintainer: UrTV <https://github.com/mElhoussini/Houssini-urTV>\nDescription: Arabic prayer-times and clock screen.\n"
                "webOS-Package-Format-Version: 2\nwebOS-Packager-Version: 1.0.0\n" % (app_id, version, size))
     data = ar([("debian-binary", b"2.0\n"), ("control.tar.gz", tar_gz([("control", control.encode("utf-8"))])),
                ("data.tar.gz", tar_gz(entries))])
