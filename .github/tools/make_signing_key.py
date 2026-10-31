@@ -8,16 +8,15 @@ must never be committed.
   pip install cryptography
   python .github/tools/make_signing_key.py
 
-With GitHub CLI installed and signed in (`gh auth login`), it stores both secrets in the repository itself and
-prints nothing secret. Without it, it prints them, for GitHub: the repository → Settings → Secrets and variables →
-Actions → New repository secret, twice:
-  ANDROID_KEYSTORE_B64       the long text it prints
-  ANDROID_KEYSTORE_PASSWORD  the password it prints
+With GitHub CLI installed and signed in (`gh auth login`), it stores both secrets in the verified `origin`
+repository and prints nothing secret. Without it, it keeps the key local and exits without printing the secrets.
 The builds sign with it from then on (CI refuses to build without it). TVs that have apps signed with another
 key need them installed again once (optimize/install.sh does that by itself; their settings start over).
 """
 import base64
 import datetime
+import os
+import re
 import secrets
 import shutil
 import subprocess
@@ -47,27 +46,39 @@ def make(password):
 
 def main():
     out = Path.home() / "urtv-signing-key.p12"
-    if out.exists():
-        sys.exit(f"{out} already exists: that is your key. Use it, or move it away first to make a new one.")
-    password = secrets.token_urlsafe(30)
-    data = make(password)
-    out.write_bytes(data)
-    (Path.home() / "urtv-signing-key-password.txt").write_text(password + "\n")
-    print(f"Key saved to {out}, its password to {Path.home() / 'urtv-signing-key-password.txt'}")
-    print("Keep both somewhere safe (a password manager, a USB stick); never commit them.\n")
+    password_file = Path.home() / "urtv-signing-key-password.txt"
+    if out.exists() or password_file.exists():
+        if not out.is_file() or not password_file.is_file():
+            sys.exit("Only one signing-key file exists; keep it safe and restore its pair before continuing.")
+        data = out.read_bytes()
+        password = password_file.read_text().rstrip("\n")
+        print(f"Reusing your existing key at {out}; password file at {password_file}.")
+    else:
+        password = secrets.token_urlsafe(30)
+        data = make(password)
+        write_private(out, data)
+        write_private(password_file, (password + "\n").encode())
+        print(f"Key saved to {out}, its password to {password_file}.")
+        print("Back up both securely; never commit them.\n")
+    out.chmod(0o600)
+    password_file.chmod(0o600)
     secret = {"ANDROID_KEYSTORE_B64": base64.b64encode(data).decode(), "ANDROID_KEYSTORE_PASSWORD": password}
     gh = gh_ready()
     if gh:
         repo = github_repo(gh)
         if not repo:
-            sys.exit("Could not identify this GitHub repository. Run this script from its checked-out folder, or add the secrets manually.")
+            sys.exit("Could not verify that origin is your GitHub repository. No secrets were changed.")
         for name, value in secret.items():   # the value goes in on stdin, never on the command line
             subprocess.run([gh, "secret", "set", name, "--repo", repo], input=value, text=True, check=True)
         print(f"Both secrets are now in {repo}. The next build signs with this key.")
         return
-    print("GitHub CLI isn't signed in, so add these two secrets by hand (see the top of this file):\n")
-    for name, value in secret.items():
-        print(f"{name}:\n{value}\n")
+    sys.exit(f"GitHub CLI isn't signed in. No secrets were changed. Run `gh auth login`, then rerun this script; your key remains at {out}.")
+
+
+def write_private(path, data):
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "wb") as f:
+        f.write(data)
 
 
 def gh_ready():
@@ -77,10 +88,20 @@ def gh_ready():
 
 
 def github_repo(gh):
-    """Get the repository for the current checkout, so a fork never writes secrets upstream."""
-    result = subprocess.run([gh, "repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner"],
+    """Use and verify origin explicitly, so an upstream remote cannot receive this key."""
+    remote = subprocess.run(["git", "remote", "get-url", "origin"], capture_output=True, text=True)
+    if remote.returncode != 0:
+        return None
+    match = re.search(r"github\.com[:/]([^/]+/[^/]+?)(?:\.git)?/?$", remote.stdout.strip())
+    if not match:
+        return None
+    repo = match.group(1)
+    user = subprocess.run([gh, "api", "user", "--jq", ".login"], capture_output=True, text=True)
+    if user.returncode != 0 or repo.split("/", 1)[0].casefold() != user.stdout.strip().casefold():
+        return None
+    result = subprocess.run([gh, "repo", "view", repo, "--json", "nameWithOwner", "--jq", ".nameWithOwner"],
                             capture_output=True, text=True)
-    return result.stdout.strip() if result.returncode == 0 else None
+    return repo if result.returncode == 0 and result.stdout.strip().casefold() == repo.casefold() else None
 
 
 if __name__ == "__main__":
