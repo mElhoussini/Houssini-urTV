@@ -21,7 +21,7 @@ jobs:
   apk:
     needs: checks
     if: ${{ !cancelled() && (needs.checks.result == 'success' || needs.checks.result == 'skipped') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       # the name people read (VERSION at the repository root, «4.0»): the release names and bodies use it; the apps read the same file in Gradle
