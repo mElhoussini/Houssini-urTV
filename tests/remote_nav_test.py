@@ -99,8 +99,8 @@ for xml in ("android/launcher/src/main/res/xml/type_service.xml", "android/launc
           not re.search(r"canPerformGestures|" + keyfilter + r"|flagRetrieveInteractiveWindows|canRequestTouchExplorationMode|canTakeScreenshot|accessibilityEventTypes=\"[^\"]*(Content|Text|Click|Focus)", x), x)
 check("the typing service still declares one event type", len(re.findall(r'accessibilityEventTypes="typeWindowStateChanged"', text("android/launcher/src/main/res/xml/type_service.xml"))) == 1)
 strings = text("android/launcher/src/main/res/values/strings.xml")
-check("the typing service is now «تلفزيونك: التحكم والكتابة من الجوال» and its description says arrows, OK, Back and Home",
-      '<string name="type_service_label">تلفزيونك: التحكم والكتابة من الجوال</string>' in strings and "الأسهم والاختيار والرجوع والرئيسية" in strings)
+check("the typing service uses its English name and its description says arrows, Select, Back and Home",
+      '<string name="type_service_label">UrTV: Phone control and typing</string>' in strings and "arrows, Select, Back, Home" in strings)
 for d in ("docs/FEATURES.md", "docs/SETTINGS.md"):
     t = text(d)
     check(f"{d} says the service presses the keys too, the log, and the adhan rule", "UrTVRemote" in t and "التحكم والكتابة من الجوال" in t)
