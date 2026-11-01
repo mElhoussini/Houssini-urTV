@@ -44,7 +44,7 @@ check("Thmanyah is optional when the system Arabic font fallback is configured",
 before = {n: (ROOT / "dist" / n).read_bytes() for n in ("tv.html",) if (ROOT / "dist" / n).is_file()}
 r = subprocess.run([sys.executable, "src/build.py"], cwd=ROOT, capture_output=True, text=True)
 check("src/build.py runs", r.returncode == 0, r.stderr[-400:])
-for page, limit in (("urtv.html", 4_000_000), ("tv.html", 680_000)):   # tv.html: about 1000 verses and hadith (650 KB until the Gulf prayer methods and the checked Aladhan answer added 4 KB; 680 KB from the one release of 26 Oct: next-prayer card, crests, city line, adhan bar, then Wave 2 countries, Hijri offset and the 24-hour clock add about 11 KB)
+for page, limit in (("urtv.html", 4_000_000), ("tv.html", 690_000)):   # 690 KB includes the English-only UI translation map; Quran and hadith data remain unchanged
     html = (ROOT / "dist" / page).read_text(encoding="utf-8")
     left = sorted(set(re.findall(r"__[A-Z][A-Z_]+__", html)))
     check(f"{page}: every build token replaced", not left, left)
