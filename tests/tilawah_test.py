@@ -174,12 +174,12 @@ for permission in ["android.permission.WAKE_LOCK", "android.permission.FOREGROUN
 # ---- the label and the pill in the home screen
 strings = ET.parse(APP / "res/values/strings.xml").getroot()
 labels = {s.get("name"): s.text for s in strings.findall("string")}
-check("the screen is called «تلاوة وأذان»", labels.get("app_name") == "تلاوة وأذان", labels.get("app_name"))
-check("the continue row is «متابعة التلاوة»",
-      labels.get("continue_listening") == "متابعة التلاوة", labels.get("continue_listening"))
+check("the screen is called Qur’an & Adhan", labels.get("app_name") == "Qur’an & Adhan", labels.get("app_name"))
+check("the continue row is Continue listening",
+      labels.get("continue_listening") == "Continue listening", labels.get("continue_listening"))
 
 home = text(JAVA / "MainActivity.java")
-check("the home screen has the «تلاوة وأذان» pill", 'pill("تلاوة وأذان"' in home and "tilawah.MainActivity" in home)
+check("the home screen has the Qur’an & Adhan pill", 'pill("Qur’an & Adhan"' in home and "tilawah.MainActivity" in home)
 
 card = text(JAVA / "HomeCard.java")
 check("the home card reads the screensaver's settings",

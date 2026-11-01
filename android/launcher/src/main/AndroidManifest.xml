@@ -144,7 +144,7 @@
         <activity
             android:name=".setup.SetupActivity"
             android:exported="true"
-            android:label="إعداد تلفزيوني"
+            android:label="TV Setup"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar">
             <intent-filter>
@@ -174,7 +174,7 @@
         <activity
             android:name=".DockActivity"
             android:exported="true"
-            android:label="ترتيب المفضلة"
+            android:label="Arrange Favorites"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 
@@ -182,7 +182,7 @@
         <activity
             android:name=".WatchNextActivity"
             android:exported="true"
-            android:label="أكمل المشاهدة"
+            android:label="Continue Watching"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 
@@ -190,7 +190,7 @@
         <activity
             android:name=".InputNamesActivity"
             android:exported="true"
-            android:label="أسماء المصادر"
+            android:label="Input Names"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 
@@ -199,7 +199,7 @@
             android:name=".FamilyDnsActivity"
             android:exported="true"
             android:permission="sa.urtv.home.FAMILY_DNS"
-            android:label="حماية العائلة"
+            android:label="Family Protection"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 
@@ -208,7 +208,7 @@
         <activity
             android:name=".PhoneActivity"
             android:exported="true"
-            android:label="تحكم من الجوال"
+            android:label="Phone Control"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 
@@ -218,7 +218,7 @@
             android:name=".UpdateActivity"
             android:exported="true"
             android:permission="sa.urtv.home.OPEN_UPDATE"
-            android:label="تحديث تلفزيوني"
+            android:label="UrTV Update"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 
@@ -231,7 +231,7 @@
         <activity
             android:name=".ParentalActivity"
             android:exported="true"
-            android:label="الرقابة الأبوية"
+            android:label="Parental Controls"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 
@@ -239,7 +239,7 @@
         <activity
             android:name=".TasksActivity"
             android:exported="true"
-            android:label="المهام"
+            android:label="Tasks"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Material.NoActionBar" />
 

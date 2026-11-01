@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- the build: UTC time (YYYYMMDDHHMMSS) of the newest commit of the page's sources, put in by src/build.py. The app loads the page with the newer stamp (its own
      copy or a downloaded one), never by file time, and does not keep a download whose stamp is older than its own (Updater, PageStamp). -->
-<meta name="urtv-build" content="20261029202753">
-<title>شاشة تلفزيونك</title>
+<meta name="urtv-build" content="20261101010927">
+<title>UrTV Screensaver</title>
 <style>
   @font-face{font-family:'Thmanyah';font-weight:300;font-style:normal;font-display:block;src:url("https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/master/assets/fonts/Thmanyah-Light.woff2") format("woff2")}
   @font-face{font-family:'Thmanyah';font-weight:400;font-style:normal;font-display:block;src:url("https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/master/assets/fonts/Thmanyah-Regular.woff2") format("woff2")}
@@ -583,13 +583,13 @@
 
     <div class="markets">
       <div class="wxline"><span class="wxt" id="wx-temp"></span><span class="wxd" id="wx-desc"></span><span class="wxdust" id="wx-dust"></span></div>
-      <div class="wxsub"><span id="wx-city">الرياض</span><span class="wxr" id="wx-range"></span></div>
+      <div class="wxsub"><span id="wx-city">Riyadh</span><span class="wxr" id="wx-range"></span></div>
       <div class="wxsrc" id="wx-src"></div>
       <div class="rule l"></div>
       <div class="mk">
-        <span class="m"><span>تاسي</span><span id="tasi-chg" class="delta" hidden></span></span>
+        <span class="m"><span>Tadawul</span><span id="tasi-chg" class="delta" hidden></span></span>
         <span class="m"><span>S&amp;P 500</span><span id="spx-chg" class="delta" hidden></span></span>
-        <span class="m"><span>بيتكوين</span><span id="btc-chg" class="delta" hidden></span></span>
+        <span class="m"><span>Bitcoin</span><span id="btc-chg" class="delta" hidden></span></span>
       </div>
     </div>
   </header>
@@ -599,21 +599,21 @@
       <div class="clock">
         <span class="ampm" id="ck-ap">—</span><span class="d" id="ck-h">--</span><span class="sep">:</span><span class="d" id="ck-m">--</span>
       </div>
-      <div class="subline"><span class="dot"></span><span id="clock-sub">بتوقيت الرياض</span></div>
+      <div class="subline"><span class="dot"></span><span id="clock-sub">Riyadh time</span></div>
       <div class="citynote" id="citynote" hidden></div>
       <div class="ystrip" id="ystrip" hidden></div>
     </div>
 
     <div class="week">
       <span class="frm"></span><span class="dia t"></span><span class="dia b"></span>
-      <div class="hd" id="week-hd">هذا الأسبوع</div>
-      <ul id="week-list"><li class="empty">جارٍ التحميل…</li></ul>
+      <div class="hd" id="week-hd">This week</div>
+      <ul id="week-list"><li class="empty">Loading…</li></ul>
     </div>
   </section>
 
   <footer class="bottom">
     <div class="panel p-prayer">
-      <div class="label" id="prayer-label">الصلاة القادمة</div>
+      <div class="label" id="prayer-label">Next prayer</div>
       <div class="big"><span id="prayer-name">—</span><span class="num" id="prayer-time"></span></div>
       <div class="sub" id="prayer-count">—</div>
     </div>
@@ -625,9 +625,9 @@
     </div>
 
     <div class="panel p-match">
-      <div class="label" id="slot-label">المباريات</div>
+      <div class="label" id="slot-label">Matches</div>
       <div class="mrow" id="match-row">
-        <div class="none-week">جارٍ التحميل…</div>
+        <div class="none-week">Loading…</div>
       </div>
     </div>
   </footer>
@@ -658,7 +658,7 @@ const _tzOk = z => { try{ new Intl.DateTimeFormat('en',{timeZone:z}); return tru
 // the cards a slot can show (Prefs.PANELS in the app is the same list); «none» is the absence of one
 const CARD_KINDS = ['shows','prayers','forecast','hourly','prayerrow','nextprayer','matches','verse','wisdom','adhkar','stocks','tasks','year','smart','today'];
 const CONFIG = {
-  city: _Q.get('city') || 'الرياض',
+  city: _Q.get('city') || 'Riyadh',
   latitude: _num('lat', 24.7136),
   longitude: _num('lon', 46.6753),
   timezone: _tzOk(_Q.get('tz') || 'Asia/Riyadh') ? (_Q.get('tz') || 'Asia/Riyadh') : 'Asia/Riyadh',
@@ -845,8 +845,17 @@ function fmtTime(h, mi){
 }
 
 // An identical write still restyles and repaints, so the timers below write only what changed.
-function setText(el, v){ if(el.textContent !== v) el.textContent = v; }
-function setHTML(el, h, force){ if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
+const EN_UI = new Map(Object.entries({
+  'تاسي':'Tadawul','بيتكوين':'Bitcoin','الرياض':'Riyadh','بتوقيت الرياض':'Riyadh time','هذا الأسبوع':'This week','جارٍ التحميل…':'Loading…',
+  'الصلاة القادمة':'Next prayer','حان الآن':'Now','الشروق':'Sunrise','رمضان':'Ramadan','المباريات':'Matches','الطقس':'Weather','الصيام':'Fasting','عدّ تنازلي':'Countdown','الأسواق':'Markets',
+  'لا جديد هذا الأسبوع':'Nothing new this week','تعذّر التحديث':'Update failed','لا تتوفر بيانات الآن':'No data available','لا مهام اليوم':'No tasks today','بعد':'in','قبل':'ago','الآن':'Now',
+  'الفجر':'Fajr','الظهر':'Dhuhr','العصر':'Asr','المغرب':'Maghrib','العشاء':'Isha','الجمعة':'Friday','أذكار الصباح':'Morning adhkar','أذكار المساء':'Evening adhkar','آية اليوم':'Verse of the day','حديث اليوم':'Hadith of the day','حكمة اليوم':'Wisdom of the day','يُتلى الآن':'Now playing',
+  'ص':'AM','م':'PM','الإقامة بعد':'Iqama in','كل عام والوطن بخير':'Happy national day','أسبوع':'week','درجة':'°','غبار':'Dust','سماء صافية':'Clear sky','سماء غائمة':'Cloudy sky'
+}));
+function protectedArabic(el){ return !!(el && el.closest && el.closest('.quote,.verse,.hadith,.quran,.arabic-text')); }
+function enUI(s){ return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
+function setText(el, v){ const out=protectedArabic(el)?v:enUI(v); if(el.textContent !== out) el.textContent = out; }
+function setHTML(el, h, force){ h=(protectedArabic(el)||/class=["'][^"']*\b(quote|quran|hadith)\b/.test(h))?h:enUI(h); if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
 
 function tickClock(){
   const p = riyadhParts();

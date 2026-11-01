@@ -504,8 +504,8 @@ public class MainActivity extends Activity {
         Pill tasks = pill("المهام", R.drawable.ic_mic);   // the list lives in the screensaver app
         tasks.setOnClickListener(v -> launchGuarded(ParentalPolicy.PILL_TASKS, new Intent(this, TasksActivity.class), "المهام"));
         // the «تلاوة وأذان» pill: the Quran, the radio and the adhan are part of this app, so it opens them right here
-        Pill tilawah = pill("تلاوة وأذان", R.drawable.ic_listen);
-        tilawah.setOnClickListener(v -> launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "تلاوة وأذان"));
+        Pill tilawah = pill("Qur’an & Adhan", R.drawable.ic_listen);
+        tilawah.setOnClickListener(v -> launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "Qur’an & Adhan"));
         // ---- «مركز التحكم» (ControlCenter): the sleep timer, the screensaver, the network and the TV's settings pills went into its panel
         control = new ControlCenter(this, controlHost());
         centerPill = pill(ControlText.NAME, R.drawable.ic_center);
@@ -530,7 +530,7 @@ public class MainActivity extends Activity {
         nowCard.setId(View.generateViewId());
         nowCard.setVisibility(View.GONE);
         nowCard.setOnClickListener(v -> NowPlaying.toggle(this));   // OK: pause or play
-        nowCard.setOnLongClickListener(v -> { launchGuarded(ParentalPolicy.PILL_LISTEN, NowPlaying.player(this), "تلاوة وأذان"); return true; });   // a long OK: the player, behind the same lock as the «تلاوة وأذان» pill
+        nowCard.setOnLongClickListener(v -> { launchGuarded(ParentalPolicy.PILL_LISTEN, NowPlaying.player(this), "Qur’an & Adhan"); return true; });   // a long OK: the player, behind the same lock as the «تلاوة وأذان» pill
         nowCard.setOnFocusChangeListener((v, has) -> {
             if (has) { lastFocusedId = v.getId(); glideTo(0); fadeGlow(1f); }
         });
@@ -575,7 +575,7 @@ public class MainActivity extends Activity {
                 case "@inputs": if (inputsPill != null) showInputs(inputsPill, ParentalPolicy.PILL_INPUTS); break;
                 case "@settings": launchGuarded(ParentalPolicy.PILL_TV_SETTINGS, new Intent(Settings.ACTION_SETTINGS), "إعدادات التلفزيون"); break;
                 case "@listen":
-                    if (getResources().getBoolean(R.bool.show_listening)) launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "تلاوة وأذان");
+                    if (getResources().getBoolean(R.bool.show_listening)) launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "Qur’an & Adhan");
                     break;
                 default: {
                     boolean shown = false;
@@ -2071,7 +2071,7 @@ public class MainActivity extends Activity {
         });
         if (listenPillHidden()) {   // the button is hidden: the player (and the adhan's settings in it) opens from here, behind the same lock
             labels.add("تلاوة وأذان…");
-            actions.add(() -> launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "تلاوة وأذان"));
+            actions.add(() -> launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "Qur’an & Adhan"));
             labels.add("إعدادات الأذان…");   // the same screen, on its «الأذان» tab: on or off, the voices, short, any key, the volume
             actions.add(() -> launchGuarded(ParentalPolicy.PILL_LISTEN, adhanSettingsIntent(), "إعدادات الأذان"));
         }

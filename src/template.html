@@ -845,12 +845,13 @@ const EN_UI = new Map(Object.entries({
   'تاسي':'Tadawul','بيتكوين':'Bitcoin','الرياض':'Riyadh','بتوقيت الرياض':'Riyadh time','هذا الأسبوع':'This week','جارٍ التحميل…':'Loading…',
   'الصلاة القادمة':'Next prayer','حان الآن':'Now','الشروق':'Sunrise','رمضان':'Ramadan','المباريات':'Matches','الطقس':'Weather','الصيام':'Fasting','عدّ تنازلي':'Countdown','الأسواق':'Markets',
   'لا جديد هذا الأسبوع':'Nothing new this week','تعذّر التحديث':'Update failed','لا تتوفر بيانات الآن':'No data available','لا مهام اليوم':'No tasks today','بعد':'in','قبل':'ago','الآن':'Now',
+  'الفجر':'Fajr','الظهر':'Dhuhr','العصر':'Asr','المغرب':'Maghrib','العشاء':'Isha','الجمعة':'Friday','أذكار الصباح':'Morning adhkar','أذكار المساء':'Evening adhkar','آية اليوم':'Verse of the day','حديث اليوم':'Hadith of the day','حكمة اليوم':'Wisdom of the day','يُتلى الآن':'Now playing',
   'ص':'AM','م':'PM','الإقامة بعد':'Iqama in','كل عام والوطن بخير':'Happy national day','أسبوع':'week','درجة':'°','غبار':'Dust','سماء صافية':'Clear sky','سماء غائمة':'Cloudy sky'
 }));
 function protectedArabic(el){ return !!(el && el.closest && el.closest('.quote,.verse,.hadith,.quran,.arabic-text')); }
 function enUI(s){ return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
 function setText(el, v){ const out=protectedArabic(el)?v:enUI(v); if(el.textContent !== out) el.textContent = out; }
-function setHTML(el, h, force){ h=protectedArabic(el)?h:enUI(h); if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
+function setHTML(el, h, force){ h=(protectedArabic(el)||/class=["'][^"']*\b(quote|quran|hadith)\b/.test(h))?h:enUI(h); if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
 
 function tickClock(){
   const p = riyadhParts();
