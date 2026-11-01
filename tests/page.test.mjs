@@ -854,6 +854,12 @@ for (const [hash, want] of [['', 'matches'], ['slot=matches', 'matches'], ['slot
   check('no team followed: the slot shows the weather, not «لا شيء هذا الأسبوع»', t.label === 'الطقس' && !t.row.includes('لا شيء') && t.row.includes('٣٧°'), JSON.stringify(t));
   await r.ctx.close();
 }
+{   // sports are opt-in now; the historical large-clock snapshots below set their old teams explicitly
+  const { p, ctx, errors } = await open('tv.html', '');
+  const r = await p.evaluate(() => ({ teams: CONFIG.teamIds, matches: SLOT_MATCHES }));
+  check('screensaver defaults to no followed teams and no sports slot', !errors.length && !r.teams.length && !r.matches, JSON.stringify(r) + errors.join('; '));
+  await ctx.close();
+}
 {   // weather: the next three days from the forecast the page has; a missing forecast keeps what was shown
   const { p, ctx, errors } = await open('tv.html', 'slot=weather');
   await p.evaluate(FORECAST_5 + FAKE_NOW('2026-10-22T09:00:00Z') + '; renderSlot();');
@@ -4376,7 +4382,10 @@ const CARD_KINDS_TEST = ['shows','prayers','forecast','hourly','prayerrow','next
     for (const [w, h] of SCREENS) {
       for (const hash of ['', 'clocksize=large', 'teams=136013&panel=verse&panel2=prayers&clocksize=large&cardstyle=dark3',
           'teams=136013&panel=prayers&panel2=hourly&cardstyle=glass1&digits=latin', 'clocksize=large&panel=year&cardstyle=glass3&yearstrip=1']) {
-        const a = await shot(base, hash, w, h), b = await shot('tv.html', hash, w, h), d = a.equals(b) ? { n: 0, max: 0 } : await pixelDiff(a, b);
+        // The new default has no followed sports teams. Set the old default explicitly in this visual regression
+        // comparison so it continues to isolate layout changes; the no-sports default is checked above.
+        const visualHash = /(?:^|&)teams=/.test(hash) ? hash : 'teams=136013,136137&' + hash;
+        const a = await shot(base, visualHash, w, h), b = await shot('tv.html', visualHash, w, h), d = a.equals(b) ? { n: 0, max: 0 } : await pixelDiff(a, b);
         check(`large clock ${w}x${h} «${hash || 'default'}»: pixel for pixel the page of ${BASE_REF} (${d.n} px of renderer noise, at most ${d.max}/255)`,
           d.n >= 0 && d.max <= NOISE, JSON.stringify(d));
       }
