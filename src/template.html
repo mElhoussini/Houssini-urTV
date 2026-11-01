@@ -657,6 +657,7 @@ const _tzOk = z => { try{ new Intl.DateTimeFormat('en',{timeZone:z}); return tru
 const CARD_KINDS = ['shows','prayers','forecast','hourly','prayerrow','nextprayer','matches','verse','wisdom','adhkar','stocks','tasks','year','smart','today'];
 const CONFIG = {
   city: _Q.get('city') || 'Riyadh',
+  hideHijri: _Q.get('hidehijri') === '1',
   latitude: _num('lat', 24.7136),
   longitude: _num('lon', 46.6753),
   timezone: _tzOk(_Q.get('tz') || 'Asia/Riyadh') ? (_Q.get('tz') || 'Asia/Riyadh') : 'Asia/Riyadh',
@@ -911,6 +912,10 @@ function tickDates(){
   nl.hidden = !nat;
   if(nat) setText(nl, nat.name + ' ' + ar(nat.n) + nat.unit);
   try{
+    const hijriEl = document.getElementById('hijri');
+    hijriEl.hidden = CONFIG.hideHijri;
+    if(CONFIG.hideHijri) hijriEl.textContent = '';
+    else {
     const hf = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-' + NU,{
       timeZone: CONFIG.timezone, weekday:'long', day:'numeric', month:'long', year:'numeric'
     });
@@ -921,7 +926,8 @@ function tickDates(){
       h = hf.formatToParts(hijriAt(now)).map(x => x.type === 'weekday' && wd ? wd.value : x.value).join('');
     }
     h = h.replace(/\s*هـ\s*$/,'').replace(/،\s*$/,'');
-    setText(document.getElementById('hijri'), h + ' هـ');
+    setText(hijriEl, h + ' هـ');
+    }
   }catch(e){}
   try{
     setText(document.getElementById('greg'), gregFmt({

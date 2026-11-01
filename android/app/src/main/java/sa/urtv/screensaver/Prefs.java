@@ -433,7 +433,7 @@ final class Prefs {
     SharedPreferences raw() { return sp; }
 
     /** The page reads its settings from the fragment; a ?query fails on file:// in WebView. */
-    String dashboardUrl(Context c) { return pageBase(c) + "#" + fragment(); }
+    String dashboardUrl(Context c) { return pageBase(c) + "#" + fragment() + "&hidehijri=1"; }
 
     /** Was a city ever set, from the settings or the computer? Until then it is the install's Riyadh (Location.note). */
     boolean cityChosen() { return sp.contains("cityName"); }
@@ -459,7 +459,7 @@ final class Prefs {
      */
     String previewUrl(Context c, String panel, String cardStyle) {
         String frag = fragment().replaceAll("(^|&)(panel|panel2|week|cardstyle|home_panel)=[^&]*", "");
-        return pageBase(c) + "#" + frag + "&panel=" + panel + "&cardstyle=" + cardStyle + "&widget=1";
+        return pageBase(c) + "#" + frag + "&panel=" + panel + "&cardstyle=" + cardStyle + "&widget=1&hidehijri=1";
     }
 
     /**

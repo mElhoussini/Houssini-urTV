@@ -33,6 +33,12 @@ CASES = [
     ("city=Riyadh", "none", "city=Riyadh", "tasks", "off"),                                                           # «بدون»: no card, so nothing live
 ]
 
+# Android home-card pages explicitly request English UI; keep the optional live flag last.
+CASES = [(frag, panel, saved, saved_panel, expected if expected == "off" else
+          expected.replace("&live=1", "&lang=en&live=1") + ("" if "&live=1" in expected else "&lang=en"))
+         for frag, panel, saved, saved_panel, expected in CASES]
+
+
 # HomeCard.pause()/refresh() call pauseTimers()/resumeTimers(), which are process-wide: safe only while this card is the launcher's only WebView
 launcher = list((ROOT / "android/launcher/src/main/java").rglob("*.java"))
 makers = [p.name for p in launcher if "new WebView(" in p.read_text(encoding="utf-8")]
