@@ -96,7 +96,7 @@
     </queries>
 
     <application
-        android:label="تلفزيونك"
+        android:label="UrTV"
         android:icon="@mipmap/ic_launcher"
         android:banner="@drawable/banner"
         android:allowBackup="false"
@@ -129,7 +129,7 @@
             android:name=".HomeTile"
             android:targetActivity=".MainActivity"
             android:exported="true"
-            android:label="تلفزيونك"
+            android:label="UrTV"
             android:icon="@mipmap/ic_launcher"
             android:banner="@drawable/banner">
             <intent-filter>
