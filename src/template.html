@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -647,6 +647,8 @@ __BG_SET__
 ];
 // the app passes the chosen city in the URL fragment: #city=..&lat=..&lon=..&tz=..
 const _Q = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+const ENGLISH_UI = _Q.get('lang') === 'en';
+if (ENGLISH_UI) { document.documentElement.lang = 'en'; document.documentElement.dir = 'ltr'; }
 const _list = k => (_Q.get(k) || '').split(',').map(x=>x.trim()).filter(Boolean);
 const _num = (k, d) => { const v = parseFloat(_Q.get(k)); return isNaN(v) ? d : v; };
 // the city's time zone, #tz=: the clock, prayers, matches and dates all go by it; one this browser does not know is Riyadh
@@ -849,7 +851,7 @@ const EN_UI = new Map(Object.entries({
   'ص':'AM','م':'PM','الإقامة بعد':'Iqama in','كل عام والوطن بخير':'Happy national day','أسبوع':'week','درجة':'°','غبار':'Dust','سماء صافية':'Clear sky','سماء غائمة':'Cloudy sky'
 }));
 function protectedArabic(el){ return !!(el && el.closest && el.closest('.quote,.verse,.hadith,.quran,.arabic-text')); }
-function enUI(s){ return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
+function enUI(s){ if(!ENGLISH_UI) return String(s); return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
 function setText(el, v){ const out=protectedArabic(el)?v:enUI(v); if(el.textContent !== out) el.textContent = out; }
 function setHTML(el, h, force){ h=(protectedArabic(el)||/class=["'][^"']*\b(quote|quran|hadith)\b/.test(h))?h:enUI(h); if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
 

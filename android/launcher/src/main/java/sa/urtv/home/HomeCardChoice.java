@@ -6,7 +6,7 @@ package sa.urtv.home;
  */
 final class HomeCardChoice {
     static final String BASE = "file:///android_asset/web/tv.html#";
-    static final String PRAYERS = BASE + "panel=prayers&widget=1";
+    static final String PRAYERS = BASE + "panel=prayers&widget=1&lang=en";
 
     private HomeCardChoice() { }
 
@@ -48,6 +48,6 @@ final class HomeCardChoice {
         if (choice == null) return PRAYERS;
         if ("none".equals(choice[1]) || choice[1].isEmpty()) return null;
         String frag = choice[0].replaceAll("(^|&)(panel|week)=[^&]*", "");   // the screensaver's own card choice
-        return BASE + frag + "&panel=" + choice[1].split(",")[0] + "&home_panel=" + choice[1] + "&widget=1";
+        return BASE + frag + "&panel=" + choice[1].split(",")[0] + "&home_panel=" + choice[1] + "&widget=1&lang=en";
     }
 }

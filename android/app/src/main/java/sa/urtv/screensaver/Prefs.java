@@ -515,7 +515,8 @@ final class Prefs {
             + "&cd=" + countdownDate()
             + "&cdname=" + Uri.encode(countdownName())
             + openTasksParam()
-            + ownParam();
+            + ownParam()
+            + "&lang=en";
     }
 
     /** The owner's own photos: how many and mix/only; nothing at all while there are none, so the page is as before. */
