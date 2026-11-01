@@ -87,7 +87,7 @@ for d in ("docs/FEATURES.md", "docs/SETTINGS.md"):
     check(f"{d} says plainly what the service sees and keeps", "الكتابة في التطبيقات الأخرى" in t or "typing into other apps" in t.lower())
     check(f"{d} names the separate service and how to turn it on", "type-setup" in t and "تلفزيونك: التحكم والكتابة من الجوال" in t)
 strings = text(res + "values/strings.xml")
-check("the typing service's own description (shown in the TV's accessibility settings) says what it sees and keeps",
-      "لا ينظر في الشاشة إلا لحظة وصول نص" in strings and "لا يحفظ ولا يسجّل ولا يرسل" in strings and "ولا في تطبيق مقفول بالرقم السري" in strings)
-check("the sleep service's description still says it reads nothing", "لا يقرأ شيئًا من الشاشة" in strings)
+check("the typing service's English description (shown in accessibility settings) explains its limits",
+      "Android reports only window changes" in strings and "does not save, record, or send screen content" in strings and "PIN-locked apps" in strings)
+check("the English sleep-service description says it reads nothing", "It does not read the screen" in strings)
 sys.exit(1 if failed else 0)
