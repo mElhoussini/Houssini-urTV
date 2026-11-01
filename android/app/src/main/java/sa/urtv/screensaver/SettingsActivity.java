@@ -62,8 +62,8 @@ public class SettingsActivity extends Activity {
     @Override
     protected void attachBaseContext(android.content.Context base) {
         android.content.res.Configuration c = new android.content.res.Configuration(base.getResources().getConfiguration());
-        c.setLocale(new java.util.Locale("ar"));
-        c.setLayoutDirection(new java.util.Locale("ar"));
+        c.setLocale(java.util.Locale.US);
+        c.setLayoutDirection(java.util.Locale.US);
         super.attachBaseContext(base.createConfigurationContext(c));
     }
 
@@ -207,13 +207,13 @@ public class SettingsActivity extends Activity {
         head.setGravity(Gravity.CENTER_VERTICAL);
         head.setPadding(0, 0, 0, dp(14));
         TextView title = new TextView(this);
-        title.setText("تلفزيونك");
+        title.setText("UrTV");
         title.setTextColor(look.text);
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 44);
         title.setTypeface(font("ThmanyahDisplay-Bold"));
         head.addView(title);
         TextView sub = new TextView(this);
-        sub.setText(screen == null ? "الإعدادات" : SettingsHub.name(screen));
+        sub.setText(screen == null ? "Settings" : conv(SettingsHub.name(screen)));
         sub.setTextColor(look.sub);
         sub.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
         sub.setTypeface(font("Thmanyah-Regular"));
@@ -1432,7 +1432,34 @@ public class SettingsActivity extends Activity {
     private static volatile boolean latinDigits;
     private boolean noConv;   // the «الأرقام» row itself says «هندية ١٢٣» and «عربية 123»: both stay as they are
 
-    private static String conv(String s) { return DigitsText.convert(s, latinDigits); }
+    private static String conv(String s) {
+        if (s == null) return "";
+        String[][] en = {
+        {"الموقع والصلاة","Location & Prayer"},{"مدينتك تحدد الوقت والطقس، وطريقة الحساب تحدد مواقيت الصلاة.","Your city sets the time and weather; the calculation method sets prayer times."},
+            {"الموقع","Location"},{"المباريات","Matches"},{"العرض","Display"},{"الأسواق (أعلى اليسار)","Markets (top left)"},{"بجانب الساعة","Beside the clock"},{"الشاشة الرئيسية (تلفزيونك)","Home screen (UrTV)"},{"جديد المسلسلات","New shows"},{"الأسهم","Stocks"},{"التوقيت","Time"},{"التطبيق","App"},
+            {"الأذان","Adhan"},{"الأذان في وقته: تشغيله وصوته ومستواه، والتنبيه قبله على الشاشة.","Adhan playback, sound, volume, and on-screen reminders."},
+            {"شاشة التوقف","Screensaver"},{"ما يظهر على شاشة التوقف: الساعة والبطاقة بجانبها، والأرقام، والصور، ومتى تبدأ.","Clock, side card, digits, photos, and start time."},
+            {"الشاشة الرئيسية","Home screen"},{"بطاقات الشاشة الرئيسية الثلاث، والتحية والطقس، وزر تلاوة وأذان.","Home cards, greeting, weather, and Qur’an & Adhan button."},
+            {"المباريات والأسواق","Sports & Markets"},{"ما تعرضه البطاقات: فرقك ودورياتك، والأسواق، والمسلسلات، والأسهم.","Cards: your teams and leagues, markets, shows, and stocks."},
+            {"التطبيقات والمفضلة","Apps & Favorites"},{"ترتيب التطبيقات المفضلة وتعديلها، وترتيب كل التطبيقات، وأسماء مصادر التلفزيون مثل PS5.","Arrange favorites and apps, and name TV inputs such as PS5."},
+            {"العائلة","Family"},{"حماية العائلة على الشبكة: تفعيلها أو إيقافها، ويرجع الإعداد القديم تلقائياً.","Family network protection. The previous setting is restored automatically."},
+            {"الجوال والتحديث","Phone & Updates"},{"التحكم من الجوال، وتحديث تلفزيوني، وتحديث الشاشة، والإصدار.","Phone control, UrTV updates, screensaver updates, and version."},
+            {"الإعدادات","Settings"},{"رجوع إلى الأقسام","Back to sections"},{"الأسهم بين الأقسام  •  اختيار لفتح القسم  •  رجوع للخروج","Arrows: navigate sections  •  Select: open  •  Back: exit"},
+            {"طريقة الحساب","Calculation method"},{"تعديل وقت الصلاة","Adjust prayer times"},{"الفرق المتابعة","Followed teams"},{"الدوريات كاملة","Follow entire leagues"},
+            {"رياضات أخرى","Other sports"},{"الأرقام","Digits"},{"تنبيه قبل الأذان","Pre-Adhan reminder"},{"الشروق بعد الفجر","Sunrise after Fajr"},
+            {"شريط الوقت بين الصلاتين","Time-until-prayer bar"},{"الرطوبة والرياح","Humidity & Wind"},{"أسماء الأشهر الميلادية","Gregorian month names"},{"شريط السنة تحت الساعة","Year strip under clock"},
+            {"المناسبات الوطنية","National occasions"},{"حجم الساعة","Clock size"},{"نظام الساعة","Clock format"},{"الخانة اليسرى","Left card"},{"العدّ التنازلي","Countdown"},
+            {"شريط الأسواق","Market ticker"},{"الأسواق","Markets"},{"عرض الأسواق","Market display"},{"المحتوى","Content"},{"بطاقة ثانية","Second card"},{"شكل البطاقة","Card style"},
+            {"البطاقة الأولى","First card"},{"البطاقة الثانية","Second card"},{"البطاقة الثالثة","Third card"},{"التحية والطقس","Greeting & Weather"},{"المظهر","Appearance"},{"زر تلاوة وأذان","Qur’an & Adhan button"},
+            {"أكمل المشاهدة","Continue watching"},{"جرس التحديثات","Update notifications"},{"ترتيب التطبيقات المفضلة","Arrange favorite apps"},{"أسماء المصادر","Input names"},{"تعديل المفضلة","Edit favorites"},{"ترتيب كل التطبيقات","Arrange all apps"},
+            {"تحديث تلفزيوني","UrTV update"},{"تحكم من الجوال","Phone control"},{"حماية العائلة","Family protection"},{"التصنيفات","Genres"},{"اللغات","Languages"},{"مسلسلات مختارة","Selected shows"},{"أقل تقييم","Minimum rating"},{"قائمة الأسهم","Stock list"},
+            {"صوري","My photos"},{"بدء شاشة التوقف بعد","Start screensaver after"},{"التحديث التلقائي للصفحة","Automatic page refresh"},{"تحديث الشاشة الآن","Update screensaver now"},
+            {"كل التطبيقات","All apps"},{"مركز التحكم","Control center"},{"المفضلة","Favorites"},{"لا شيء","None"},{"بحث","Search"},{"ظاهر","Shown"},{"مخفي","Hidden"},{"فاتح","Light"},{"داكن","Dark"}
+        };
+        String out = s;
+        for (String[] pair : en) out = out.replace(pair[0], pair[1]);
+        return DigitsText.convert(out, true);
+    }
 
     private static String arabicNum(int n) { return conv(String.valueOf(n)); }
 
@@ -1567,7 +1594,7 @@ public class SettingsActivity extends Activity {
         col.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         col.setPadding(dp(14), dp(12), dp(14), dp(12));
         TextView title = new TextView(this);
-        title.setText(half ? (l.light ? "فاتح" : "داكن") : "الإعدادات");
+        title.setText(half ? (l.light ? "Light" : "Dark") : "Settings");
         title.setTextColor(l.text);
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         title.setTypeface(font("ThmanyahDisplay-Bold"));
@@ -1576,7 +1603,7 @@ public class SettingsActivity extends Activity {
         tiles.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         for (int k = 0; k < (half ? 1 : 2); k++) {
             TextView t = new TextView(this);
-            t.setText(k == 0 ? "الموقع" : "الأذان");
+            t.setText(k == 0 ? "Location" : "Adhan");
             t.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
             t.setTypeface(font("Thmanyah-Medium"));
             t.setGravity(Gravity.CENTER);
@@ -1588,7 +1615,7 @@ public class SettingsActivity extends Activity {
         }
         col.addView(tiles, llp(-1, -2, dp(8)));
         TextView row = new TextView(this);
-        row.setText("المدينة · الرياض");
+        row.setText("City · Cairo");
         row.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
         row.setTypeface(font("Thmanyah-Regular"));
         row.setTextColor(l.sub);

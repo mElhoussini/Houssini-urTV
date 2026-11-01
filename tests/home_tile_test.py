@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The «تلفزيونك» tile for a TV that keeps its own home (setupwraith / launcherx): an activity-alias with LEANBACK_LAUNCHER and our banner that opens
+"""The UrTV tile for a TV that keeps its own home (setupwraith / launcherx): an activity-alias with LEANBACK_LAUNCHER and our banner that opens
 MainActivity by component. It must never change HOME handling (no HOME category on it, MainActivity's HOME entry stays the only one), Back must
 leave our home when it is not the default one, our own «كل التطبيقات» must not list us, the other launcher entries stay, and the family lock is not touched.
 Needs javac for the Java cases. Run: python3 tests/home_tile_test.py"""
@@ -53,8 +53,8 @@ def filters(el):
 alias = [a for a in app.findall("activity-alias") if a.get(A + "name") == ".HomeTile"]
 check("there is one activity-alias .HomeTile", len(alias) == 1)
 al = alias[0]
-check("it targets MainActivity, is exported, is called «تلفزيونك» and has our banner and icon",
-      al.get(A + "targetActivity") == ".MainActivity" and al.get(A + "exported") == "true" and al.get(A + "label") == "تلفزيونك"
+check("it targets MainActivity, is exported, is called UrTV and has our banner and icon",
+      al.get(A + "targetActivity") == ".MainActivity" and al.get(A + "exported") == "true" and al.get(A + "label") == "UrTV"
       and al.get(A + "banner") == "@drawable/banner" and al.get(A + "icon") == "@mipmap/ic_launcher")
 check("its one filter is MAIN + LEANBACK_LAUNCHER and nothing else (no HOME, so it cannot become or compete as a home)",
       filters(al) == [(["android.intent.action.MAIN"], ["LEANBACK_LAUNCHER"])], filters(al))
