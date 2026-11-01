@@ -59,7 +59,7 @@ player = text("PlayerActivity.java")
 check("a held left/right seeks through SeekPace (one seek per 250 ms), both ways",
       player.count("if (seekPace.due(event.getRepeatCount(), event.getEventTime())) MusicService.seekBy(this, ") == 2)
 strings = (ROOT / "android/launcher/src/main/res/values/strings.xml").read_text(encoding="utf-8")
-check("the Player's hint says what left/right do there, in the card's words («يمين/يسار: ١٠ ثوانٍ»)", "يمين/يسار: ١٠ ثوانٍ" in strings)
+check("the Player hint names left/right seeking in English", "Left/right: 10 seconds" in strings)
 
 if not shutil.which("javac"):
     print("SKIP player logic: no javac here")
