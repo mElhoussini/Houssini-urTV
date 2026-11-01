@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- the build: UTC time (YYYYMMDDHHMMSS) of the newest commit of the page's sources, put in by src/build.py. The app loads the page with the newer stamp (its own
      copy or a downloaded one), never by file time, and does not keep a download whose stamp is older than its own (Updater, PageStamp). -->
-<meta name="urtv-build" content="20261101050719">
-<title>UrTV Screensaver</title>
+<meta name="urtv-build" content="20261101082222">
+<title>شاشة تلفزيونك</title>
 <style>
   @font-face{font-family:'Thmanyah';font-weight:300;font-style:normal;font-display:block;src:url("https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/master/assets/fonts/Thmanyah-Light.woff2") format("woff2")}
   @font-face{font-family:'Thmanyah';font-weight:400;font-style:normal;font-display:block;src:url("https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/master/assets/fonts/Thmanyah-Regular.woff2") format("woff2")}
@@ -583,13 +583,13 @@
 
     <div class="markets">
       <div class="wxline"><span class="wxt" id="wx-temp"></span><span class="wxd" id="wx-desc"></span><span class="wxdust" id="wx-dust"></span></div>
-      <div class="wxsub"><span id="wx-city">Riyadh</span><span class="wxr" id="wx-range"></span></div>
+      <div class="wxsub"><span id="wx-city">الرياض</span><span class="wxr" id="wx-range"></span></div>
       <div class="wxsrc" id="wx-src"></div>
       <div class="rule l"></div>
       <div class="mk">
-        <span class="m"><span>Tadawul</span><span id="tasi-chg" class="delta" hidden></span></span>
+        <span class="m"><span>تاسي</span><span id="tasi-chg" class="delta" hidden></span></span>
         <span class="m"><span>S&amp;P 500</span><span id="spx-chg" class="delta" hidden></span></span>
-        <span class="m"><span>Bitcoin</span><span id="btc-chg" class="delta" hidden></span></span>
+        <span class="m"><span>بيتكوين</span><span id="btc-chg" class="delta" hidden></span></span>
       </div>
     </div>
   </header>
@@ -599,21 +599,21 @@
       <div class="clock">
         <span class="ampm" id="ck-ap">—</span><span class="d" id="ck-h">--</span><span class="sep">:</span><span class="d" id="ck-m">--</span>
       </div>
-      <div class="subline"><span class="dot"></span><span id="clock-sub">Riyadh time</span></div>
+      <div class="subline"><span class="dot"></span><span id="clock-sub">بتوقيت الرياض</span></div>
       <div class="citynote" id="citynote" hidden></div>
       <div class="ystrip" id="ystrip" hidden></div>
     </div>
 
     <div class="week">
       <span class="frm"></span><span class="dia t"></span><span class="dia b"></span>
-      <div class="hd" id="week-hd">This week</div>
-      <ul id="week-list"><li class="empty">Loading…</li></ul>
+      <div class="hd" id="week-hd">هذا الأسبوع</div>
+      <ul id="week-list"><li class="empty">جارٍ التحميل…</li></ul>
     </div>
   </section>
 
   <footer class="bottom">
     <div class="panel p-prayer">
-      <div class="label" id="prayer-label">Next prayer</div>
+      <div class="label" id="prayer-label">الصلاة القادمة</div>
       <div class="big"><span id="prayer-name">—</span><span class="num" id="prayer-time"></span></div>
       <div class="sub" id="prayer-count">—</div>
     </div>
@@ -625,9 +625,9 @@
     </div>
 
     <div class="panel p-match">
-      <div class="label" id="slot-label">Matches</div>
+      <div class="label" id="slot-label">المباريات</div>
       <div class="mrow" id="match-row">
-        <div class="none-week">Loading…</div>
+        <div class="none-week">جارٍ التحميل…</div>
       </div>
     </div>
   </footer>
@@ -660,7 +660,7 @@ const _tzOk = z => { try{ new Intl.DateTimeFormat('en',{timeZone:z}); return tru
 // the cards a slot can show (Prefs.PANELS in the app is the same list); «none» is the absence of one
 const CARD_KINDS = ['shows','prayers','forecast','hourly','prayerrow','nextprayer','matches','verse','wisdom','adhkar','stocks','tasks','year','smart','today'];
 const CONFIG = {
-  city: _Q.get('city') || 'Riyadh',
+  city: _Q.get('city') || 'الرياض',
   hideHijri: _Q.get('hidehijri') === '1',
   latitude: _num('lat', 24.7136),
   longitude: _num('lon', 46.6753),
@@ -768,7 +768,12 @@ CONFIG.prayerMethod = _Q.get('pm') === 'jafari' ? 0 : _Q.get('pm') === 'gulf' ? 
   : RESOLVED_METHOD !== null ? RESOLVED_METHOD : ({'Asia/Kuwait':9, 'Asia/Qatar':10, 'Asia/Dubai':16, 'Asia/Bahrain':8, 'Asia/Muscat':100, 'Africa/Cairo':5, 'Asia/Amman':23, 'Asia/Damascus':5, 'Asia/Beirut':5, 'Asia/Gaza':5, 'Asia/Hebron':5, 'Asia/Jerusalem':5, 'Africa/Casablanca':21, 'Africa/El_Aaiun':21, 'Africa/Algiers':19, 'Africa/Tunis':18})[CONFIG.timezone] || 4;
 // the calculation's name under the clock, none for Umm al-Qura (ClockZone.calendar says the same on the home screen)
 const CAL_LABEL = {1:'جامعة العلوم الإسلامية بكراتشي',2:'الجمعية الإسلامية لأمريكا الشمالية',3:'رابطة العالم الإسلامي',11:'المجلس الإسلامي السنغافوري',12:'اتحاد المنظمات الإسلامية في فرنسا',13:'رئاسة الشؤون الدينية التركية',14:'الإدارة الدينية لمسلمي روسيا',15:'لجنة رصد الهلال العالمية',17:'إدارة التنمية الإسلامية الماليزية',20:'وزارة الشؤون الدينية الإندونيسية',0:'الحساب الجعفري', 8:'حساب الخليج', 100:'حساب عُمان', 9:'حساب الكويت', 10:'حساب قطر', 16:'حساب الإمارات', 5:'حساب الهيئة المصرية', 23:'حساب الأردن', 21:'حساب المغرب', 19:'حساب الجزائر', 18:'حساب تونس'};
-const clockSubText = () => 'بتوقيت ' + CONFIG.city + (CAL_LABEL[CONFIG.prayerMethod] ? ' · ' + CAL_LABEL[CONFIG.prayerMethod] : '');
+const clockSubText = () => {
+  const method = CAL_LABEL[CONFIG.prayerMethod];
+  if(!ENGLISH_UI) return 'بتوقيت ' + CONFIG.city + (method ? ' · ' + method : '');
+  const city = enUI(CONFIG.city), place = city === 'Riyadh' ? 'Riyadh time' : 'Time in ' + city;
+  return place + (method ? ' · ' + enUI(method) : '');
+};
 // «بطاقة ثانية» (#panel2=): a second card beside the small clock only; with a larger clock, on the launcher, without a first card,
 // or when it is the first card again or the next prayer (the bottom-right panel says it already), there is none
 CONFIG.panel2 = (p => CARD_KINDS.includes(p) && p !== 'nextprayer' && p !== CONFIG.panel ? p : 'none')(_Q.get('panel2') || '');
@@ -849,11 +854,16 @@ function fmtTime(h, mi){
 
 // An identical write still restyles and repaints, so the timers below write only what changed.
 const EN_UI = new Map(Object.entries({
-  'تاسي':'Tadawul','بيتكوين':'Bitcoin','الرياض':'Riyadh','بتوقيت الرياض':'Riyadh time','هذا الأسبوع':'This week','جارٍ التحميل…':'Loading…',
+  'تاسي':'Tadawul','بيتكوين':'Bitcoin','الرياض':'Riyadh','القاهرة':'Cairo','جدة':'Jeddah','الدمام':'Dammam','مكة':'Mecca','المدينة':'Medina',
+  'أرامكو':'Aramco','الذهب':'Gold','الفضة':'Silver','نفط برنت':'Brent oil','ريبل':'XRP',
+  'بتوقيت الرياض':'Riyadh time','هذا الأسبوع':'This week','جارٍ التحميل…':'Loading…',
   'الصلاة القادمة':'Next prayer','حان الآن':'Now','الشروق':'Sunrise','رمضان':'Ramadan','المباريات':'Matches','الطقس':'Weather','الصيام':'Fasting','عدّ تنازلي':'Countdown','الأسواق':'Markets',
   'لا جديد هذا الأسبوع':'Nothing new this week','تعذّر التحديث':'Update failed','لا تتوفر بيانات الآن':'No data available','لا مهام اليوم':'No tasks today','بعد':'in','قبل':'ago','الآن':'Now',
   'الفجر':'Fajr','الظهر':'Dhuhr','العصر':'Asr','المغرب':'Maghrib','العشاء':'Isha','الجمعة':'Friday','أذكار الصباح':'Morning adhkar','أذكار المساء':'Evening adhkar','آية اليوم':'Verse of the day','حديث اليوم':'Hadith of the day','حكمة اليوم':'Wisdom of the day','يُتلى الآن':'Now playing',
-  'ص':'AM','م':'PM','الإقامة بعد':'Iqama in','كل عام والوطن بخير':'Happy national day','أسبوع':'week','درجة':'°','غبار':'Dust','سماء صافية':'Clear sky','سماء غائمة':'Cloudy sky'
+  'ص':'AM','م':'PM','الإقامة بعد':'Iqama in','كل عام والوطن بخير':'Happy national day','أسبوع':'week','درجة':'°','غبار':'Dust','سماء صافية':'Clear sky','سماء غائمة':'Cloudy sky',
+  'الحساب الجعفري':'Ja\'fari calculation','حساب الخليج':'Gulf calculation','حساب عُمان':'Oman calculation','حساب الكويت':'Kuwait calculation',
+  'حساب قطر':'Qatar calculation','حساب الإمارات':'UAE calculation','حساب الهيئة المصرية':'Egyptian General Authority calculation',
+  'حساب الأردن':'Jordan calculation','حساب المغرب':'Morocco calculation','حساب الجزائر':'Algeria calculation','حساب تونس':'Tunisia calculation'
 }));
 function protectedArabic(el){ return !!(el && el.closest && el.closest('.quote,.verse,.hadith,.quran,.arabic-text')); }
 function enUI(s){ if(!ENGLISH_UI) return String(s); return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
@@ -2043,7 +2053,7 @@ function buildMarkets(){
   mk.hidden = !CONFIG.mkBar;
   if(!PRICES && TICKERS.map(t => t.key).join() === 'tasi,spx,btc') return;
   mk.className = 'mk' + (PRICES ? ' px' : '') + (PRICES && TICKERS.length > 2 ? ' g' : '');
-  mk.innerHTML = TICKERS.map(t => `<span class="m"><span>${esc(t.name)}</span>`
+  mk.innerHTML = TICKERS.map(t => `<span class="m"><span>${esc(enUI(t.name))}</span>`
     + (PRICES ? `<span class="px" id="${t.px}"${t.unit ? ` data-u="${t.unit}"` : ''} hidden></span>` : '')
     + `<span id="${t.chg}" class="delta" hidden></span></span>`).join('');
   if(PRICES) mk.insertAdjacentHTML('afterend', '<div class="mkup" id="mk-up" hidden></div>');
@@ -3620,16 +3630,17 @@ function boot(){
   // the parts of the choices that are off by default are made only when chosen: off, the page is as it was, element for element
   if(CONFIG.prayerBar) document.getElementById('prayer-count').insertAdjacentHTML('afterend', '<div class="pbar" id="pbar"><i id="pbar-fill"></i></div>');
   const wxCity = document.getElementById('wx-city');
-  if(wxCity) wxCity.textContent = CONFIG.city;
+  if(wxCity) setText(wxCity, CONFIG.city);
   const cs = document.getElementById('clock-sub');
-  if(cs) cs.textContent = clockSubText();
+  if(cs) setText(cs, clockSubText());
   const cn = document.getElementById('citynote');
   if(cn && CONFIG.cityNote){   // Location.note in the app says the same in the settings' top row
-    cn.textContent = 'المدينة: ' + CONFIG.city + '. لتغييرها: الإعدادات ثم الموقع';   // words, not «←» (not in Thmanyah) nor «‹›» (mirrored or not by the renderer)
+    cn.textContent = ENGLISH_UI ? 'City: ' + enUI(CONFIG.city) + '. To change it: Settings → Location'
+      : 'المدينة: ' + CONFIG.city + '. لتغييرها: الإعدادات ثم الموقع';
     cn.hidden = false;
     setTimeout(() => { cn.hidden = true; }, 10*60*1000);
   }
-  document.title = 'شاشة تلفزيونك';
+  document.title = ENGLISH_UI ? 'UrTV Screensaver' : 'شاشة تلفزيونك';
   applyBackground(true);
   loadPhotoIndex().then(() => applyBackground(true));
   setInterval(() => applyBackground(false), 60*1000);
