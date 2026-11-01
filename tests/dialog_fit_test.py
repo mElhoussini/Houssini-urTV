@@ -32,7 +32,10 @@ check("the source has the lists with «حفظ» (the test reads what it should)"
 for name, body in dialogs.items():
     check(f"{name}: made with Dlg.multi (its list fits the screen, DOWN reaches «حفظ», Back saves)", "new Dlg(this).multi(() -> {" in body, name)
     check(f"{name}: no «حفظ» or «إلغاء» of its own besides multi's", 'setPositiveButton("حفظ"' not in body and 'setNegativeButton("إلغاء"' not in body, name)
-check("every setMultiChoiceItems of the settings is in one of those", st.count("setMultiChoiceItems(") == sum(b.count("setMultiChoiceItems(") for b in dialogs.values()))
+wrapped_multi = "super.setMultiChoiceItems(english(items), checked, listener)"
+check("every setMultiChoiceItems of the settings is in one of those or the shared English-label wrapper",
+      st.count("setMultiChoiceItems(") == sum(b.count("setMultiChoiceItems(") for b in dialogs.values()) + 1
+      and st.count(wrapped_multi) == 1)
 leagues = dialogs.get("pickLeagues", "")
 check("«الدوريات كاملة» saves the leagues ticked (and keeps its limit of Prefs.MAX_LEAGUES while ticking)",
       'prefs.setList("leagues", v);' in leagues and "checked && n > Prefs.MAX_LEAGUES" in leagues
