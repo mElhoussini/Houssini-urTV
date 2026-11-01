@@ -221,7 +221,7 @@ check("left/right switches the section", "KEYCODE_DPAD_LEFT" in main and "select
 check("the sections are drawn as a tab bar",
       'android:id="@+id/tabs"' in text(APP / "res/layout/activity_main.xml")
       and "@+id/tab_adhan" in text(APP / "res/layout/activity_main.xml"))
-check("the adhan tab names the muezzin", labels.get("adhan_voice") == "المؤذن")
+check("the adhan tab names the muezzin", labels.get("adhan_voice") == "Muezzin")
 
 player = text(TILAWAH / "PlayerActivity.java")
 check("an adhan cannot be seeked or skipped",
@@ -312,7 +312,7 @@ check("the volume row: left and right in steps of 10, OK does nothing",
 check("music.sh sets the adhan volume", "adhan volume" in music and "sa.urtv.home.ADHAN_VOLUME" in music and "adhan_volume=" in music)
 check("MusicReceiver takes the volume", "sa.urtv.home.ADHAN_VOLUME" in text(TILAWAH / "MusicReceiver.java") and "ADHAN_VOLUME" in manifest)
 check("the settings row warns when the alarm may be late", "KIND_EXACT" in main and "adhan_exact_title" in main
-      and "ACTION_REQUEST_SCHEDULE_EXACT_ALARM" in main and "قد يتأخر الأذان دقائق" in text(APP / "res/values/strings.xml"))
+      and "ACTION_REQUEST_SCHEDULE_EXACT_ALARM" in main and "Adhan may be delayed by a few minutes" in text(APP / "res/values/strings.xml"))
 
 # ---- power and the main thread
 check("the position tick runs only while something plays", "startTick()" in service_src and "stopTick()" in service_src
