@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""The release's name («4.0», the VERSION file) without breaking updates: the versionName is exactly "4.0", the versionCode is still the
-run number, version.txt is still exactly "3.<run>" (an installed 3.142 reads it as before), nothing takes our own versionName apart, the
-release is published under its name with the build in the body, and the screens show «4.0» alone.
+"""The release's name («4.0», the VERSION file) without breaking updates: the versionName is exactly "4.0", the versionCode is the
+fork's offset build number, version.txt stays in the compatible "3.<build>" form (an installed 3.142 reads it as before), nothing takes
+our own versionName apart, the release is published under its name with the build in the body, and the screens show «4.0» alone.
 (The comparison itself, an installed 3.142 fed the new version.txt, is in tests/versions_test.py.)  Run: python3 tests/version_name_test.py"""
 import os
 import re
@@ -30,8 +30,8 @@ name = ver.strip()
 
 for mod in ("app", "launcher"):
     g = text(f"android/{mod}/build.gradle")
-    check(f"{mod}: versionCode is still the run number",
-          "versionCode((System.getenv('GITHUB_RUN_NUMBER') ?: '1') as int)" in g)
+    check(f"{mod}: versionCode uses the workflow's offset build number",
+          "versionCode((System.getenv('URTV_BUILD_NUMBER') ?: System.getenv('GITHUB_RUN_NUMBER') ?: '1') as int)" in g)
     check(f"{mod}: versionName is exactly the VERSION file («4.0», what Android's app info shows), and MARKETING is the VERSION file",
           "versionName file('../../VERSION').text.trim()" in g and "GITHUB_RUN_NUMBER') ?: '0'}\"" not in g
           and 'buildConfigField "String", "MARKETING", "\\"${file(\'../../VERSION\').text.trim()}\\""' in g and "buildConfig true" in g)
@@ -65,16 +65,17 @@ check("install_versions_test feeds a name with a build too", 'code="151"' in tex
 
 # the workflow
 wf = text(".github/workflows/android.yml")
-check("version.txt is written exactly as before: \"3.<run>\" (an installed 3.142 reads the newest build from it)", 'echo "3.${{ github.run_number }}" > version.txt' in wf and wf.count("> version.txt") == 1)
+check("the offset build is written in version.txt as 3.<build> (an installed 3.142 reads the newest build from it)",
+      'build=$((1000 + GITHUB_RUN_NUMBER))' in wf and 'echo "3.${{ steps.ver.outputs.build }}" > version.txt' in wf and wf.count("> version.txt") == 1)
 check("version.txt goes to apk-latest and apk-next as before, and not to the numbered release",
       wf.count("            version.txt\n") == 2)
-check("the Version step validates VERSION (major.minor); the numbered release is tagged v<name>.<run> (only the URL shows it) and titled exactly «UrTV <name>»",
-      "id: ver" in wf and "grep -Eq '^[0-9]+\\.[0-9]+$'" in wf and "tag_name: v${{ steps.ver.outputs.name }}.${{ github.run_number }}" in wf
+check("the Version step validates VERSION (major.minor); the numbered release is tagged v<name>.<build> (only the URL shows it) and titled exactly «UrTV <name>»",
+      "id: ver" in wf and "grep -Eq '^[0-9]+\\.[0-9]+$'" in wf and "tag_name: v${{ steps.ver.outputs.name }}.${{ steps.ver.outputs.build }}" in wf
       and "name: UrTV ${{ steps.ver.outputs.name }}\n" in wf and "UrTV ${{ steps.ver.outputs.name }} (build" not in wf)
-check("the bodies say the version and the build", wf.count('body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ github.run_number }}), built from') == 3)
+check("the bodies say the version and the offset build", wf.count('body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ steps.ver.outputs.build }}), built from') == 3)
 check("apk-latest is still published from master with make_latest, apk-next from next", "tag_name: apk-latest" in wf and "make_latest: true" in wf and "tag_name: apk-next" in wf)
 check("a change of VERSION alone starts a build", "'VERSION'" in wf.split("paths:")[1].splitlines()[0])
-check("the old v3.N tag form is gone from the workflow (new builds are v<name>.<run>)", "v3.${{" not in wf)
+check("the old v3.N tag form is gone from the workflow (new builds are v<name>.<build>)", "v3.${{" not in wf)
 # docs
 cl = text("CHANGELOG.md")
 check("the CHANGELOG has a section for this release (the VERSION file's name) and 4.0's names the version.txt rule",
