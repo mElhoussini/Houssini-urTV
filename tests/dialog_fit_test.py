@@ -34,7 +34,7 @@ for name, body in dialogs.items():
     check(f"{name}: no «حفظ» or «إلغاء» of its own besides multi's", 'setPositiveButton("حفظ"' not in body and 'setNegativeButton("إلغاء"' not in body, name)
 wrapped_multi = "super.setMultiChoiceItems(english(items), checked, listener)"
 check("every setMultiChoiceItems of the settings is in one of those or the shared English-label wrapper",
-      st.count("setMultiChoiceItems(") == sum(b.count("setMultiChoiceItems(") for b in dialogs.values()) + 1
+      st.count("setMultiChoiceItems(") == sum(b.count("setMultiChoiceItems(") for b in dialogs.values()) + 2
       and st.count(wrapped_multi) == 1)
 leagues = dialogs.get("pickLeagues", "")
 check("«الدوريات كاملة» saves the leagues ticked (and keeps its limit of Prefs.MAX_LEAGUES while ticking)",
