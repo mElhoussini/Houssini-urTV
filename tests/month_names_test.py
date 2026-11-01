@@ -21,8 +21,10 @@ check("page: only #months=levant turns them on", "months: _Q.get('months') === '
 check("page: every Gregorian month name goes through gregFmt (no Gregorian formatter with a month left outside it)",
       not re.search(r"new Intl\.DateTimeFormat\(GREG,\s*\{[^}]*month:", tpl), re.findall(r"new Intl\.DateTimeFormat\(GREG,\s*\{[^}]*month:[^}]*\}", tpl))
 main = (HOME / "MainActivity.java").read_text(encoding="utf-8")
-check("home: the date line goes through MonthNames with the screensaver's setting",
-      "MonthNames.of(gregFormat.format(now.getTime()), MonthNames.levant(cfg.fragment))" in main)
+check("home: the date line uses the English Gregorian formatter",
+      'gregFormat = new SimpleDateFormat("d MMMM", Locale.US)' in main
+      and "String greg = gregFormat.format(now.getTime());" in main
+      and "MonthNames.of(gregFormat.format(now.getTime()), MonthNames.levant(cfg.fragment))" not in main)
 app = (ROOT / "android/app/src/main/java/sa/urtv/screensaver/Prefs.java").read_text(encoding="utf-8")
 check("app: months=levant goes in the fragment only when chosen (the default fragment is as before)",
       '("levant".equals(months()) ? "&months=levant" : "")' in app)
