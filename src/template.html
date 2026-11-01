@@ -854,6 +854,11 @@ function protectedArabic(el){ return !!(el && el.closest && el.closest('.quote,.
 function enUI(s){ if(!ENGLISH_UI) return String(s); return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
 function setText(el, v){ const out=protectedArabic(el)?v:enUI(v); if(el.textContent !== out) el.textContent = out; }
 function setHTML(el, h, force){ h=(protectedArabic(el)||/class=["'][^"']*\b(quote|quran|hadith)\b/.test(h))?h:enUI(h); if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
+function translateStaticUI(){
+  if(!ENGLISH_UI) return;
+  const w=document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  while(w.nextNode()){ const n=w.currentNode; if(protectedArabic(n.parentElement)) continue; n.nodeValue=enUI(n.nodeValue); }
+}
 
 function tickClock(){
   const p = riyadhParts();
@@ -3575,6 +3580,7 @@ function nowPlayingTick(){
 }
 
 function boot(){
+  translateStaticUI();
   pruneStorage();
   if(CONFIG.widget){ bootWidget(); return; }
   buildCards();

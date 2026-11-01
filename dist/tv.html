@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- the build: UTC time (YYYYMMDDHHMMSS) of the newest commit of the page's sources, put in by src/build.py. The app loads the page with the newer stamp (its own
      copy or a downloaded one), never by file time, and does not keep a download whose stamp is older than its own (Updater, PageStamp). -->
-<meta name="urtv-build" content="20261101011131">
+<meta name="urtv-build" content="20261101050630">
 <title>UrTV Screensaver</title>
 <style>
   @font-face{font-family:'Thmanyah';font-weight:300;font-style:normal;font-display:block;src:url("https://raw.githubusercontent.com/mElhoussini/Houssini-urTV/master/assets/fonts/Thmanyah-Light.woff2") format("woff2")}
@@ -858,6 +858,11 @@ function protectedArabic(el){ return !!(el && el.closest && el.closest('.quote,.
 function enUI(s){ if(!ENGLISH_UI) return String(s); return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
 function setText(el, v){ const out=protectedArabic(el)?v:enUI(v); if(el.textContent !== out) el.textContent = out; }
 function setHTML(el, h, force){ h=(protectedArabic(el)||/class=["'][^"']*\b(quote|quran|hadith)\b/.test(h))?h:enUI(h); if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
+function translateStaticUI(){
+  if(!ENGLISH_UI) return;
+  const w=document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  while(w.nextNode()){ const n=w.currentNode; if(protectedArabic(n.parentElement)) continue; n.nodeValue=enUI(n.nodeValue); }
+}
 
 function tickClock(){
   const p = riyadhParts();
@@ -3579,6 +3584,7 @@ function nowPlayingTick(){
 }
 
 function boot(){
+  translateStaticUI();
   pruneStorage();
   if(CONFIG.widget){ bootWidget(); return; }
   buildCards();
