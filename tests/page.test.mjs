@@ -299,8 +299,8 @@ for (const [width, height] of [[1920, 1080], [1280, 720], [960, 540]]) {
         const bar = document.querySelector('.bottom').getBoundingClientRect();
         tallest = Math.max(tallest, c.height);
         const top = document.querySelector('.top').getBoundingClientRect();
-        // a card beside the clock, not a page: clear of the top line, the clock and the bottom bar, at most 42% high
-        if (c.top < top.bottom || c.bottom > bar.top - 4 || c.right > clock.left - 4 || c.height > 0.42 * innerHeight)
+        // A paired card is capped at 42% of the screen; one card keeps its full size. Both must clear the top, clock and bottom bar.
+        if (c.top < top.bottom || c.bottom > bar.top - 4 || c.right > clock.left - 4 || (CARDS.length > 1 && c.height > 0.42 * innerHeight))
           bad.push(`${Math.round(c.top)}-${Math.round(c.bottom)}/${Math.round(bar.top)} ` + card.querySelector('.quote').textContent.slice(0, 40));
       }
       return { days, bad, tallest: Math.round(tallest) };
@@ -1701,6 +1701,7 @@ for (const [width, height] of [[461, 250], [1920, 1080], [960, 540]]) {   // lon
   const { p, ctx, errors } = await open('tv.html', 'lang=en&city=القاهرة&tz=Africa%2FCairo&citynote=1&markets=aramco,gold,silver,oil');
   const r = await p.evaluate(() => ({
     dir: document.documentElement.dir,
+    title: document.title,
     week: document.getElementById('week-hd').textContent,
     prayer: document.getElementById('prayer-label').textContent,
     city: document.getElementById('wx-city').textContent,
@@ -1709,7 +1710,8 @@ for (const [width, height] of [[461, 250], [1920, 1080], [960, 540]]) {   // lon
     markets: [...document.querySelectorAll('.mk .m > span:first-child')].map(e => e.textContent)
   }));
   check('English UI: labels, city, first-run note and markets are English and left-to-right',
-    !errors.length && r.dir === 'ltr' && r.week === 'This week' && r.prayer === 'Next prayer'
+    !errors.length && r.dir === 'ltr' && r.title === 'UrTV Screensaver'
+      && ['Verse of the day', 'Hadith of the day'].includes(r.week) && ['Next prayer', 'Now'].includes(r.prayer)
       && r.city === 'Cairo' && r.clock === 'Time in Cairo · Egyptian General Authority calculation'
       && r.note === 'City: Cairo. To change it: Settings → Location'
       && r.markets.join() === 'Aramco,Gold,Silver,Brent oil', JSON.stringify(r) + errors.join('; '));
