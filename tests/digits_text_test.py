@@ -25,9 +25,9 @@ check("Digits.java (the launcher's state) reads the setting like the other setti
       "ConfigSnapshot.read(c)" in (HOME / "Digits.java").read_text(encoding="utf-8") and "putBoolean(\"latin\"" in (HOME / "Digits.java").read_text(encoding="utf-8"))
 for act in ["MainActivity", "TasksActivity", "DockActivity", "tilawah/MainActivity", "tilawah/SurahActivity", "tilawah/PlayerActivity", "tilawah/AdhanActivity"]:
     check(f"launcher {act}: starts with Digits.init (its numbers follow the setting)", "Digits.init(this)" in (HOME / (act + ".java")).read_text(encoding="utf-8"))
-check("settings: every number and label goes through conv() and the setting is read at each render",
+check("settings: settings labels and digits are normalized to English",
       "latinDigits = DigitsText.isLatin(prefs.digits());" in (APP / "SettingsActivity.java").read_text(encoding="utf-8")
-      and "DigitsText.convert(s, latinDigits)" in (APP / "SettingsActivity.java").read_text(encoding="utf-8"))
+      and "DigitsText.convert(out, true)" in (APP / "SettingsActivity.java").read_text(encoding="utf-8"))
 
 if not shutil.which("javac"):
     print("SKIP digits text: no javac here")
