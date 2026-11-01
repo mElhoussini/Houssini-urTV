@@ -2260,7 +2260,7 @@ public class MainActivity extends Activity {
         zoneLine.setVisibility(other ? View.VISIBLE : View.GONE);
         if (other) zoneLine.setText(ClockZone.label(zone[0], cal));
         if (gregFormat == null) {
-            gregFormat = new SimpleDateFormat("d MMMM", new Locale("ar"));
+            gregFormat = new SimpleDateFormat("d MMMM", Locale.US);
             try {
                 hijriFormat = new android.icu.text.SimpleDateFormat("EEEE، d MMMM y", new android.icu.util.ULocale("ar_SA@calendar=islamic-umalqura"));
                 hijriDay = new android.icu.text.SimpleDateFormat("d MMMM y", new android.icu.util.ULocale("ar_SA@calendar=islamic-umalqura"));
@@ -2272,18 +2272,8 @@ public class MainActivity extends Activity {
             if (hijriDay != null) hijriDay.setTimeZone(android.icu.util.TimeZone.getTimeZone(tz));
             formatZone = tz;
         }
-        String hijri = "";
-        try {
-            int shift = HijriShift.fromFragment(cfg.fragment);   // «فرق التاريخ الهجري»: 0 unless the settings say so
-            if (hijriFormat != null && shift == 0) hijri = hijriFormat.format(now.getTime()).replaceAll("\\s*هـ\\s*$", "") + " هـ";
-            else if (hijriFormat != null) {   // the day, month and year move by the offset; the weekday is today's
-                if (hijriWeekday == null) hijriWeekday = new android.icu.text.SimpleDateFormat("EEEE", new android.icu.util.ULocale("ar_SA@calendar=islamic-umalqura"));
-                hijriWeekday.setTimeZone(android.icu.util.TimeZone.getTimeZone(tz));
-                hijri = hijriWeekday.format(now.getTime()) + "، " + hijriDay.format(HijriShift.date(now, shift)).replaceAll("\\s*هـ\\s*$", "") + " هـ";
-            }
-        } catch (Exception ignored) { }
-        String greg = MonthNames.of(gregFormat.format(now.getTime()), MonthNames.levant(cfg.fragment));   // «تشرين الأول» when chosen
-        date.setText(arabicDigits(hijri.isEmpty() ? greg : hijri + "  –  " + greg));
+        String greg = gregFormat.format(now.getTime());
+        date.setText(greg);
         updateAdhanBar(cfg);
         applyListenPill(cfg.listenPillOn);
         applyUpdateBell(cfg.updateBellOn);   // [updates bell]
@@ -2750,11 +2740,43 @@ public class MainActivity extends Activity {
     }
 
     private TextView text(float sp, String family, int color) {
-        TextView t = new TextView(this);
+        TextView t = new EnglishTextView(this);
         t.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
         t.setTypeface(font(family));
         t.setTextColor(color);
         return t;
+    }
+
+    private static final class EnglishTextView extends TextView {
+        EnglishTextView(android.content.Context context) { super(context); }
+        @Override public void setText(CharSequence text, BufferType type) {
+            super.setText(text == null ? null : englishHomeText(text.toString()), type);
+        }
+    }
+
+    /** Translate home-screen labels at the last rendering step; Qur'an and hadith content belongs to the protected saver WebView. */
+    private static String englishHomeText(String value) {
+        String s = value;
+        String[][] words = {
+            {"كل التطبيقات","All apps"},{"المصادر","Inputs"},{"المهام","Tasks"},{"تحديثات التطبيقات","App updates"},
+            {"مركز التحكم","Control center"},{"تراجع","Undo"},{"المفضلة","Favorites"},{"تعديل المفضلة","Edit favorites"},
+            {"ترتيب كل التطبيقات","Arrange all apps"},{"تحديث تلفزيوني","UrTV update"},{"إزالة من المفضلة","Remove from favorites"},
+            {"إضافة إلى المفضلة","Add to favorites"},{"إعادة المفضلة الافتراضية","Restore default favorites"},{"تلاوة وأذان","Qur’an & Adhan"},
+            {"إعدادات الأذان","Adhan settings"},{"الرقابة الأبوية","Parental controls"},{"البث التلفزيوني","Live TV"},
+            {"كل المصادر","All inputs"},{"إعدادات التلفزيون","TV settings"},{"شاشة التوقف","Screensaver"},{"مؤقت النوم","Sleep timer"},
+            {"المفضلة لا تقل عن","At least"},{"المفضلة ممتلئة","Favorites are full"},{"كل تطبيقاتك في المفضلة","All apps are already favorites"},
+            {"أُضيف إلى المفضلة:","Added to favorites:"},{"ما فيه تعديل في وضع الأطفال","Editing is disabled in Kids mode"},
+            {"تطبيقات","apps"},{"تطبيق","app"},{"دقيقة","min"},{" دقائق"," min"},{" دقيقة"," min"},
+            {"رجع ترتيب","Restored"},{"للأصل","to default"},{"حسب الاسم","by name"},{"أولاً","first"},
+            {"الفجر","Fajr"},{"الظهر","Dhuhr"},{"العصر","Asr"},{"المغرب","Maghrib"},{"العشاء","Isha"},{"الشروق","Sunrise"},
+            {"الجمعة","Friday"},{"صباح الخير","Good morning"},{"طاب يومك","Have a nice day"},{"مساء الخير","Good evening"},{"تصبح على خير","Good night"},
+            {"سماء صافية غالبًا","Mostly clear"},{"سماء صافية","Clear"},{"غائم جزئيًا","Partly cloudy"},{"سماء غائمة","Cloudy"},{"غائم","Cloudy"},
+            {"ضباب","Fog"},{"رذاذ","Drizzle"},{"أمطار غزيرة","Heavy rain"},{"أمطار","Rain"},{"ثلوج","Snow"},{"عواصف رعدية","Thunderstorms"},
+            {"غبار كثيف","Heavy dust"},{"غبار","Dust"},{"القاهرة","Cairo"},{"الرياض","Riyadh"},{"جدة","Jeddah"},{"الدمام","Dammam"},{"مكة","Mecca"},{"المدينة المنورة","Medina"}
+        };
+        java.util.Arrays.sort(words, (a, b) -> Integer.compare(b[0].length(), a[0].length()));
+        for (String[] pair : words) s = s.replace(pair[0], pair[1]);
+        return DigitsText.convert(s, true);
     }
 
     private int dp(float v) {

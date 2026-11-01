@@ -18,10 +18,8 @@ import java.util.List;
 final class Prefs {
     static final String TZ = "Asia/Riyadh";
 
-    // TheSportsDB id, Arabic name; more teams come from the in-app search
-    static final String[][] TEAM_PRESETS = {
-        {"136013", "الهلال"}, {"136137", "المنتخب السعودي"},
-    };
+    // No sports are followed by default. A person can add teams from settings.
+    static final String[][] TEAM_PRESETS = {};
 
     // League name exactly as TheSportsDB spells it (checked from CI by .github/tools/team_ids.py), Arabic label.
     // Their clubs come from assets/shared/teams.json (Teams), which CI builds from these leagues' matches
@@ -187,7 +185,7 @@ final class Prefs {
     List<String> teams() {
         if (!sp.contains("teams")) {
             List<String> v = new ArrayList<>();
-            for (int slot = 1; slot <= 2; slot++) {
+            for (int slot = 1; slot <= TEAM_PRESETS.length; slot++) {
                 String[] def = TEAM_PRESETS[slot - 1];
                 String id = sp.getString("team" + slot + "Id", def[0]);
                 if (!id.isEmpty()) v.add(id + "|" + sp.getString("team" + slot + "Name", def[1]));

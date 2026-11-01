@@ -668,7 +668,9 @@ const CONFIG = {
   prayerMethod: 4,   // set below
   // followed teams in priority order: #teams=id,id,... (up to 20); older builds send team1/team2
   teamIds: (_Q.has('teams') ? _Q.get('teams').split(',')
-            : [_Q.has('team1') ? _Q.get('team1') : '136013', _Q.has('team2') ? _Q.get('team2') : '136137'])
+            : (_Q.has('team1') || _Q.has('team2')
+                ? [_Q.has('team1') ? _Q.get('team1') : '', _Q.has('team2') ? _Q.get('team2') : '']
+                : []))
     .map(x=>(x||'').trim()).filter(x=>/^\d+$/.test(x)).slice(0, 20),
   sportsKey: '123',
   // whole leagues: #leagues=Saudi-Arabian Pro League,NBA (default none; up to 5): every game of every club in them
@@ -807,8 +809,8 @@ const LS = {
 };
 
 // every number on the screen goes through ar() or a formatter built on NU, so CONFIG.digits decides them all
-const LATIN = CONFIG.digits === 'latin', NU = LATIN ? 'latn' : 'arab';
-const GREG = 'ar-SA-u-ca-gregory-nu-' + NU;
+const LATIN = ENGLISH_UI || CONFIG.digits === 'latin', NU = LATIN ? 'latn' : 'arab';
+const GREG = (ENGLISH_UI ? 'en-US' : 'ar-SA') + '-u-ca-gregory-nu-' + NU;
 const AR = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
 const ar = s => LATIN ? String(s) : String(s).replace(/[0-9]/g, d => AR[+d]);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -863,10 +865,36 @@ const EN_UI = new Map(Object.entries({
   'ص':'AM','م':'PM','الإقامة بعد':'Iqama in','كل عام والوطن بخير':'Happy national day','أسبوع':'week','درجة':'°','غبار':'Dust','سماء صافية':'Clear sky','سماء غائمة':'Cloudy sky',
   'الحساب الجعفري':'Ja\'fari calculation','حساب الخليج':'Gulf calculation','حساب عُمان':'Oman calculation','حساب الكويت':'Kuwait calculation',
   'حساب قطر':'Qatar calculation','حساب الإمارات':'UAE calculation','حساب الهيئة المصرية':'Egyptian General Authority calculation',
-  'حساب الأردن':'Jordan calculation','حساب المغرب':'Morocco calculation','حساب الجزائر':'Algeria calculation','حساب تونس':'Tunisia calculation'
+  'حساب الأردن':'Jordan calculation','حساب المغرب':'Morocco calculation','حساب الجزائر':'Algeria calculation','حساب تونس':'Tunisia calculation',
+  'الرياض':'Riyadh','القاهرة':'Cairo','جدة':'Jeddah','الدمام':'Dammam','مكة':'Mecca','المدينة المنورة':'Medina',
+  'الجمعة':'Friday','السبت':'Saturday','الأحد':'Sunday','الاثنين':'Monday','الثلاثاء':'Tuesday','الأربعاء':'Wednesday','الخميس':'Thursday',
+  'يناير':'January','فبراير':'February','مارس':'March','أبريل':'April','مايو':'May','يونيو':'June','يوليو':'July','أغسطس':'August','سبتمبر':'September','أكتوبر':'October','نوفمبر':'November','ديسمبر':'December',
+  'إقامة':'Iqama','بعد':'in','دقيقة':'min','دقائق':'min','ساعة':'hr','ساعات':'hr','يوم':'day','أيام':'days',
+  'جزئيًا':'Partly cloudy','غائم جزئيًا':'Partly cloudy','سماء صافية غالبًا':'Mostly clear','سماء غائمة':'Cloudy','ضباب':'Fog','رذاذ':'Drizzle','أمطار':'Rain','أمطار غزيرة':'Heavy rain','مطر متجمد':'Freezing rain','ثلوج':'Snow','عواصف رعدية':'Thunderstorm','عواصف رعدية وبرد':'Thunderstorm with hail','غبار':'Dust','غبار كثيف':'Heavy dust',
+  'رطوبة':'Humidity','رياح':'Wind','كم/س':'km/h','آخر تحديث':'Updated','النتيجة النهائية':'Final score','مباشر':'Live','متوقع':'Upcoming',
+  'الإمساك':'Fasting starts','الإفطار':'Iftar','السحور':'Suhoor','رمضان':'Ramadan','المناسبة القادمة':'Next occasion','المناسبة':'Occasion',
+  'العيد الوطني السعودي':'Saudi National Day','يوم التأسيس':'Founding Day','كل عام والوطن بخير':'Happy Saudi National Day',
+  'تنبيه:':'Note:','لا توجد بيانات الآن':'No data available','غير متاح':'Unavailable','لا توجد نتائج':'No results','لا توجد فرق متابعة':'No teams followed',
+  'بتوقيت':'Time in','حساب':'Calculation','الهيئة المصرية':'Egyptian General Authority','ص':'AM','م':'PM'
+  ,'اليوم':'Today','غائم جزئياً':'Partly cloudy','غائم جزئيًا':'Partly cloudy','مشمس':'Sunny','مشمس غالبًا':'Mostly sunny','غائم':'Cloudy',
+  'لا توجد مباريات':'No matches','لا مباريات':'No matches','لا توجد مباريات اليوم':'No games today','المفضلة':'Favorites','إعدادات':'Settings',
+  'تحديث':'Update','تحديث الآن':'Update now','مكتمل':'Done','اليوم الوطني':'National Day','عيد الفطر':'Eid al-Fitr','عيد الأضحى':'Eid al-Adha',
+  'الأسهم':'Stocks','السعر':'Price','التغيير':'Change','جرام':'gram','أونصة':'ounce','الدولار':'USD','منذ':'Updated','كل يوم':'Every day',
+  'صباح':'Morning','مساء':'Evening','ليلاً':'Night','الطقس الحالي':'Current weather','الحرارة':'Temperature','درجة مئوية':'°C',
+  'عرض المزيد':'Show more','إخفاء':'Hide','التالي':'Next','السابق':'Previous','لا يوجد':'None','بدون':'None','متابعة':'Follow',
+  'الجمعة':'Friday','السبت':'Saturday','الأحد':'Sunday','الاثنين':'Monday','الثلاثاء':'Tuesday','الأربعاء':'Wednesday','الخميس':'Thursday',
+  'يناير':'January','فبراير':'February','مارس':'March','أبريل':'April','مايو':'May','يونيو':'June','يوليو':'July','أغسطس':'August','سبتمبر':'September','أكتوبر':'October','نوفمبر':'November','ديسمبر':'December'
 }));
 function protectedArabic(el){ return !!(el && el.closest && el.closest('.quote,.verse,.hadith,.quran,.arabic-text')); }
-function enUI(s){ if(!ENGLISH_UI) return String(s); return String(s).replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day').replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m); }
+function enUI(s){
+  if(!ENGLISH_UI) return String(s);
+  return String(s)
+    .replace(/تلاوة وأذان/g, 'Qur’an & Adhan').replace(/صباح الخير/g,'Good morning').replace(/مساء الخير/g,'Good evening').replace(/تصبح على خير/g,'Good night').replace(/طاب يومك/g,'Have a nice day')
+    .replace(/إقامة (الفجر|الظهر|العصر|المغرب|العشاء) بعد ([٠-٩0-9]+) دقيقة/g, (_, p, n) => 'Iqama for ' + (EN_UI.get(p)||p) + ' in ' + n + ' min')
+    .replace(/(الفجر|الظهر|العصر|المغرب|العشاء) بعد ([٠-٩0-9]+) دقيقة/g, (_, p, n) => (EN_UI.get(p)||p) + ' in ' + n + ' min')
+    .replace(/([\u0600-\u06FF][\u0600-\u06FF\s،؛:·.؟!()٪%٠-٩]*)/g, m => EN_UI.get(m.trim()) || m)
+    .replace(/[\u0600-\u06FF]+/g, m => EN_UI.get(m) || (/^[٠-٩]+$/.test(m) ? [...m].map(d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).join('') : ''));
+}
 function setText(el, v){ const out=protectedArabic(el)?v:enUI(v); if(el.textContent !== out) el.textContent = out; }
 function setHTML(el, h, force){ h=(protectedArabic(el)||/class=["'][^"']*\b(quote|quran|hadith)\b/.test(h))?h:enUI(h); if(force || el.__h !== h){ el.__h = h; el.innerHTML = h; return true; } return false; }
 function translateStaticUI(){

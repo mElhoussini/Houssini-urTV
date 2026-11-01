@@ -22,15 +22,28 @@ final class AppNames {
 
     static String label(Context c, ResolveInfo ri, Map<String, String> given) {
         String set = given.get(ri.activityInfo.packageName);
-        if (set != null) return set;
+        // Older setups stored labels in the TV's current language. Prefer the English package table
+        // over a saved Arabic override so an update really switches app titles to English.
+        if (set != null && !hasArabic(set)) return set;
         String preferred = table(c).get(ri.activityInfo.packageName);
         if (preferred != null) return preferred;
-        return String.valueOf(ri.loadLabel(c.getPackageManager()));
+        String own = String.valueOf(ri.loadLabel(c.getPackageManager()));
+        return hasArabic(own) ? ri.activityInfo.packageName.replace('.', ' ') : own;
+    }
+
+    private static boolean hasArabic(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            Character.UnicodeBlock b = Character.UnicodeBlock.of(s.charAt(i));
+            if (b == Character.UnicodeBlock.ARABIC || b == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_A
+                    || b == Character.UnicodeBlock.ARABIC_PRESENTATION_FORMS_B) return true;
+        }
+        return false;
     }
 
     /** Where the shown name comes from, for dock.sh names: agent, own, table. */
     static String source(Context c, ResolveInfo ri, Map<String, String> given) {
-        if (given.containsKey(ri.activityInfo.packageName)) return "agent";
+        String set = given.get(ri.activityInfo.packageName);
+        if (set != null && !hasArabic(set)) return "agent";
         return table(c).containsKey(ri.activityInfo.packageName) ? "table" : "own";
     }
 

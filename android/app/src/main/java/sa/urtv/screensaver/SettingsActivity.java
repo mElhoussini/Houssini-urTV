@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Outline;
@@ -1454,7 +1455,17 @@ public class SettingsActivity extends Activity {
             {"أكمل المشاهدة","Continue watching"},{"جرس التحديثات","Update notifications"},{"ترتيب التطبيقات المفضلة","Arrange favorite apps"},{"أسماء المصادر","Input names"},{"تعديل المفضلة","Edit favorites"},{"ترتيب كل التطبيقات","Arrange all apps"},
             {"تحديث تلفزيوني","UrTV update"},{"تحكم من الجوال","Phone control"},{"حماية العائلة","Family protection"},{"التصنيفات","Genres"},{"اللغات","Languages"},{"مسلسلات مختارة","Selected shows"},{"أقل تقييم","Minimum rating"},{"قائمة الأسهم","Stock list"},
             {"صوري","My photos"},{"بدء شاشة التوقف بعد","Start screensaver after"},{"التحديث التلقائي للصفحة","Automatic page refresh"},{"تحديث الشاشة الآن","Update screensaver now"},
-            {"كل التطبيقات","All apps"},{"مركز التحكم","Control center"},{"المفضلة","Favorites"},{"لا شيء","None"},{"بحث","Search"},{"ظاهر","Shown"},{"مخفي","Hidden"},{"فاتح","Light"},{"داكن","Dark"}
+            {"كل التطبيقات","All apps"},{"مركز التحكم","Control center"},{"المفضلة","Favorites"},{"لا شيء","None"},{"بحث","Search"},{"ظاهر","Shown"},{"مخفي","Hidden"},{"فاتح","Light"},{"داكن","Dark"},
+            {"معاينة الشاشة","Preview screen"},{"شاهد الشاشة الآن","Preview the screen now"},{"الدولة","Country"},{"المنطقة","Region"},{"المدينة","City"},
+            {"اختر المكان","Choose location"},{"إضافة فريق","Add team"},{"الدوري","League"},{"لا توجد فرق متابعة","No teams followed"},{"الفرق المتابعة","Followed teams"},
+            {"الفرق المتابعة (ألغِ التحديد للحذف)","Followed teams (uncheck to remove)"},{"الدوريات كاملة","Follow entire leagues"},{"رياضات أخرى","Other sports"},
+            {"لا توجد مسلسلات مختارة","No shows selected"},{"المسلسلات المختارة (ألغِ التحديد للحذف)","Selected shows (uncheck to remove)"},{"اختر المسلسل","Choose a show"},
+            {"حفظ","Save"},{"إلغاء","Cancel"},{"اختيار","Select"},{"رجوع","Back"},{"التالي","Next"},{"السابق","Previous"},
+            {"حذف كل صوري؟","Delete all my photos?"},{"المدينة","City"},{"الدولة","Country"},{"مصر","Egypt"},{"القاهرة","Cairo"},{"الرياض","Riyadh"},{"جدة","Jeddah"},{"الدمام","Dammam"},
+            {"تلقائي","Automatic"},{"إيقاف","Off"},{"صغيرة","Small"},{"متوسطة","Medium"},{"كبيرة","Large"},{"الحالية","Current"},{"داكنة","Dark"},{"زجاجية","Glass"},
+            {"المباريات","Matches"},{"الطقس","Weather"},{"الصيام","Fasting"},{"الأسواق","Markets"},{"بدون","None"},{"مواقيت الصلاة اليوم","Prayer times today"},
+            {"آية أو حديث اليوم","Verse or hadith of the day"},{"أذكار الصباح والمساء","Morning and evening adhkar"},{"طقس الأيام القادمة","Upcoming weather"},{"المهام","Tasks"},
+            {"مواقيت الصلاة","Prayer times"},{"تلاوة وأذان","Qur’an & Adhan"},{"تحديث","Update"},{"بحث","Search"},{"اسم","Name"},{"الاسم","Name"}
         };
         String out = s;
         for (String[] pair : en) out = out.replace(pair[0], pair[1]);
@@ -1638,6 +1649,20 @@ public class SettingsActivity extends Activity {
         private boolean raw;   // its words keep their own digits (the «الأرقام» picker shows both kinds)
 
         Dlg(SettingsActivity a) { super(a, a.look.light ? R.style.UrDialogLight : R.style.UrDialog); owner = a; }   // the glass of now
+
+        @Override public AlertDialog.Builder setTitle(CharSequence title) { return super.setTitle(conv(String.valueOf(title))); }
+        @Override public AlertDialog.Builder setMessage(CharSequence message) { return super.setMessage(conv(String.valueOf(message))); }
+        @Override public AlertDialog.Builder setPositiveButton(CharSequence text, DialogInterface.OnClickListener listener) { return super.setPositiveButton(conv(String.valueOf(text)), listener); }
+        @Override public AlertDialog.Builder setNegativeButton(CharSequence text, DialogInterface.OnClickListener listener) { return super.setNegativeButton(conv(String.valueOf(text)), listener); }
+        @Override public AlertDialog.Builder setNeutralButton(CharSequence text, DialogInterface.OnClickListener listener) { return super.setNeutralButton(conv(String.valueOf(text)), listener); }
+        private static CharSequence[] english(CharSequence[] items) {
+            CharSequence[] out = new CharSequence[items.length];
+            for (int i = 0; i < items.length; i++) out[i] = conv(String.valueOf(items[i]));
+            return out;
+        }
+        @Override public AlertDialog.Builder setItems(CharSequence[] items, DialogInterface.OnClickListener listener) { return super.setItems(english(items), listener); }
+        @Override public AlertDialog.Builder setSingleChoiceItems(CharSequence[] items, int checked, DialogInterface.OnClickListener listener) { return super.setSingleChoiceItems(english(items), checked, listener); }
+        @Override public AlertDialog.Builder setMultiChoiceItems(CharSequence[] items, boolean[] checked, DialogInterface.OnMultiChoiceClickListener listener) { return super.setMultiChoiceItems(english(items), checked, listener); }
 
         Dlg raw() { raw = true; return this; }
 
