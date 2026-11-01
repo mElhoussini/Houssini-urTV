@@ -35,7 +35,8 @@ check("the pref the row sets is the one the receiver sets and the fragment carri
       'void setClock24(boolean v) { sp.edit().putBoolean("clock24", v).apply(); }' in prefs and "+ ClockSetting.fragment(clock24())" in prefs
       and 'p.setClock24("on".equals(clock24))' in (APP / "SaverReceiver.java").read_text(encoding="utf-8"))
 check("the fragment goes to the screensaver's page (dashboardUrl), the settings' previews (previewUrl) and the home (ConfigProvider)",
-      'String dashboardUrl(Context c) { return pageBase(c) + "#" + fragment(); }' in prefs and "String frag = fragment()" in prefs
+      'String dashboardUrl(Context c) { return pageBase(c) + "#" + fragment() + "&hidehijri=1"; }' in prefs
+      and '"&widget=1&hidehijri=1"' in prefs and "String frag = fragment()" in prefs
       and "c.addRow(new Object[] {p.fragment()," in (APP / "ConfigProvider.java").read_text(encoding="utf-8"))
 home_main = (HOME / "MainActivity.java").read_text(encoding="utf-8")
 card = (HOME / "HomeCard.java").read_text(encoding="utf-8")
