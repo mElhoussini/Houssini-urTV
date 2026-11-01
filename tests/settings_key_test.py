@@ -42,7 +42,7 @@ check("the service is still declared once, with its xml, behind BIND_ACCESSIBILI
       man.count('android:name=".TypeService"') == 1 and "@xml/type_service" in man
       and 'android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"' in man.split('android:name=".TypeService"')[1][:300])
 check("no new permission for this (the launcher declares the same ones)", man.count("<uses-permission") == 18)
-check("the TV's accessibility settings tell the person about the Settings key", "زر الإعدادات في الريموت يفتح إعدادات التلفزيون" in text("android/launcher/src/main/res/values/strings.xml"))
+check("the TV's accessibility description explains the Settings key", "the remote’s Settings button opens TV settings" in text("android/launcher/src/main/res/values/strings.xml"))
 
 # the service
 fk = ts.split("private void filterKeys() {")[1].split("\n    }\n")[0]

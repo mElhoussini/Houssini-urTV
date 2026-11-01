@@ -33,7 +33,7 @@
     <string name="sleep_service_label">UrTV: Turn off screen</string>
     <string name="sleep_service_desc">Turns off the TV screen when the sleep timer ends. It presses Back and Home, and on Android 13 or later the arrows and Select, when your phone sends them. It does not read the screen or record what you type.</string>
     <string name="type_service_label">UrTV: Phone control and typing</string>
-    <string name="type_service_desc">Sends arrows, Select, Back, Home, and text from your phone to the app currently open on the TV. Android reports only window changes so UrTV can identify the foreground app. It does not save, record, or send screen content to your phone, and it will not type in password fields or PIN-locked apps.</string>
+    <string name="type_service_desc">Sends arrows, Select, Back, Home, and text from your phone to the app currently open on the TV. Android reports only window changes so UrTV can identify the foreground app. It does not save, record, or send screen content to your phone, and it will not type in password fields or PIN-locked apps. Outside the home screen, the remote’s Settings button opens TV settings; all other remote buttons work as before.</string>
     <string name="channel_name">Playback</string>
 
     <!-- the adhan section -->
