@@ -1696,6 +1696,26 @@ for (const [width, height] of [[461, 250], [1920, 1080], [960, 540]]) {   // lon
   }
 }
 
+// ---- the Android app requests English explicitly; direct pages remain Arabic by default
+{
+  const { p, ctx, errors } = await open('tv.html', 'lang=en&city=القاهرة&tz=Africa%2FCairo&citynote=1&markets=aramco,gold,silver,oil');
+  const r = await p.evaluate(() => ({
+    dir: document.documentElement.dir,
+    week: document.getElementById('week-hd').textContent,
+    prayer: document.getElementById('prayer-label').textContent,
+    city: document.getElementById('wx-city').textContent,
+    clock: document.getElementById('clock-sub').textContent,
+    note: document.getElementById('citynote').textContent,
+    markets: [...document.querySelectorAll('.mk .m > span:first-child')].map(e => e.textContent)
+  }));
+  check('English UI: labels, city, first-run note and markets are English and left-to-right',
+    !errors.length && r.dir === 'ltr' && r.week === 'This week' && r.prayer === 'Next prayer'
+      && r.city === 'Cairo' && r.clock === 'Time in Cairo · Egyptian General Authority calculation'
+      && r.note === 'City: Cairo. To change it: Settings → Location'
+      && r.markets.join() === 'Aramco,Gold,Silver,Brent oil', JSON.stringify(r) + errors.join('; '));
+  await ctx.close();
+}
+
 // ---- «الصلاة القادمة» is the home screen's only: on the screensaver its bottom-right panel says the same, so panel=nextprayer is the verse there
 {
   const { p, ctx, errors } = await open('tv.html', 'panel=nextprayer', { width: 1920, height: 1080 });
