@@ -31,6 +31,8 @@ jobs:
           name=$(tr -d '[:space:]' < VERSION)
           echo "$name" | grep -Eq '^[0-9]+\.[0-9]+$' || { echo "::error::VERSION must be like 4.0 (major.minor)"; exit 1; }
           echo "name=$name" >> "$GITHUB_OUTPUT"
+          build=$((1000 + GITHUB_RUN_NUMBER))
+          echo "build=$build" >> "$GITHUB_OUTPUT"
 
       - name: Build the page
         run: python3 src/build.py
@@ -60,13 +62,14 @@ jobs:
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           URTV_BRANCH: ${{ github.ref_name }}   # the screensaver fetches its page from the branch it was built from
+          URTV_BUILD_NUMBER: ${{ steps.ver.outputs.build }}
         run: gradle -p android assembleRelease --no-daemon
 
       - name: Rename
         run: |
           cp android/app/build/outputs/apk/release/app-release.apk urtv-screensaver.apk
           cp android/launcher/build/outputs/apk/release/launcher-release.apk urtv-home.apk
-          echo "3.${{ github.run_number }}" > version.txt   # EXACTLY "3.<run>": every app that ever shipped (3.142 and after) reads the newest build from here, whatever the apps are called now; /releases/latest ends in apk-latest, not in a number
+          echo "3.${{ steps.ver.outputs.build }}" > version.txt
 
       # apksigner, not keytool: the home APK has no v1 (JAR) signature, so keytool sees no signer in it
       - name: Which key signed them
@@ -90,7 +93,7 @@ jobs:
         with:
           tag_name: apk-latest
           name: Latest APKs
-          body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ github.run_number }}), built from ${{ github.sha }}"
+          body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ steps.ver.outputs.build }}), built from ${{ github.sha }}"
           fail_on_unmatched_files: true   # a name that matches nothing (a typo) must stop the publish, not publish without it
           files: |
             urtv-screensaver.apk
@@ -103,9 +106,9 @@ jobs:
         if: github.ref_name == 'master'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.ver.outputs.name }}.${{ github.run_number }}
+          tag_name: v${{ steps.ver.outputs.name }}.${{ steps.ver.outputs.build }}
           name: UrTV ${{ steps.ver.outputs.name }}
-          body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ github.run_number }}), built from ${{ github.sha }}"
+          body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ steps.ver.outputs.build }}), built from ${{ github.sha }}"
           fail_on_unmatched_files: true   # a name that matches nothing (a typo) must stop the publish, not publish without it
           files: |
             urtv-screensaver.apk
@@ -120,7 +123,7 @@ jobs:
         with:
           tag_name: apk-next
           name: Test build from next
-          body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ github.run_number }}), built from next at ${{ github.sha }}. For testing only."
+          body: "Both apps at version ${{ steps.ver.outputs.name }} (build ${{ steps.ver.outputs.build }}), built from next at ${{ github.sha }}. For testing only."
           fail_on_unmatched_files: true   # a name that matches nothing (a typo) must stop the publish, not publish without it
           files: |
             urtv-screensaver.apk
