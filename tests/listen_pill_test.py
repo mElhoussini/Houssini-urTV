@@ -50,8 +50,8 @@ check("a build without the listening part (R.bool.show_listening false) never sh
 tick = main.split("applyListenPill(cfg.listenPillOn);")
 check("the minute tick applies the setting", len(tick) == 2 and "updateAdhanBar(cfg);" in tick[0][-80:], "")
 menu = main.split("private void showAppMenuNow(")[1].split("showMenu(anchor, labels, actions);")[0]
-check("hidden: the app menu has «تلاوة وأذان…», behind the same family lock as the button, and only then",
-      "if (listenPillHidden()) {" in menu and 'launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "تلاوة وأذان")' in menu, menu)
+check("hidden: the app menu has Qur’an & Adhan, behind the same family lock as the button, and only then",
+      "if (listenPillHidden()) {" in menu and 'launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class), "Qur’an & Adhan")' in menu, menu)
 check("shown: the button itself is still behind that lock",
       'tilawah.setOnClickListener(v -> launchGuarded(ParentalPolicy.PILL_LISTEN, new Intent(this, sa.urtv.home.tilawah.MainActivity.class)' in main)
 check("the «يُتلى الآن» card still opens the player (long OK) behind the same lock",
